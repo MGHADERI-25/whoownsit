@@ -1,8 +1,10 @@
 import 'package:dio/dio.dart';
 
 import 'open_food_facts_api.dart';
+import 'open_food_facts_response.dart';
+import 'product_lookup_api_client.dart';
 
-class OpenFoodFactsClient {
+class OpenFoodFactsClient implements ProductLookupApiClient {
   OpenFoodFactsClient({
     Dio? dio,
   }) : _dio = dio ??
@@ -17,7 +19,8 @@ class OpenFoodFactsClient {
 
   final Dio _dio;
 
-  Future<Map<String, dynamic>> lookupProduct(String barcode) async {
+  @override
+  Future<OpenFoodFactsResponse> lookupProduct(String barcode) async {
     final response = await _dio.get<Map<String, dynamic>>(
       OpenFoodFactsApi.productLookupUrl(barcode),
     );
@@ -28,6 +31,6 @@ class OpenFoodFactsClient {
       throw const FormatException('Open Food Facts returned no data.');
     }
 
-    return data;
+    return OpenFoodFactsResponse(data: data);
   }
 }
