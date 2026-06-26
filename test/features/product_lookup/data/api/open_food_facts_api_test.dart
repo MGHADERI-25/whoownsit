@@ -10,7 +10,7 @@ void main() {
 
       expect(
         url,
-        'https://world.openfoodfacts.org/api/v2/product/7613036242925'
+        'https://world.openfoodfacts.org/api/v2/product/7613036242925.json'
         '?fields=code,product_name,brands,image_front_url',
       );
     });

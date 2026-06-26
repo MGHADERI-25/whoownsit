@@ -8,6 +8,6 @@ class OpenFoodFactsApi {
       'code,product_name,brands,image_front_url';
 
   static String productLookupUrl(String barcode) {
-    return '$baseUrl/product/$barcode?fields=$productFields';
+    return '$baseUrl/product/$barcode.json?fields=$productFields';
   }
 }
