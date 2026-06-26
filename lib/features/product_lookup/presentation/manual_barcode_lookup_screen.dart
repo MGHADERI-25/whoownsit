@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../scan/presentation/barcode_scanner_screen.dart';
 
 import '../../ownership/domain/ownership_result.dart';
 import '../../ownership/domain/ownership_result_status.dart';
@@ -52,6 +53,20 @@ class _ManualBarcodeLookupScreenState extends State<ManualBarcodeLookupScreen> {
     });
   }
 
+  Future<void> _scanBarcode() async {
+    final scannedBarcode = await Navigator.of(context).push<String>(
+      MaterialPageRoute(
+        builder: (_) => const BarcodeScannerScreen(),
+      ),
+    );
+
+    if (scannedBarcode == null || !mounted) {
+      return;
+    }
+
+    _barcodeController.text = scannedBarcode;
+  }
+
   @override
   Widget build(BuildContext context) {
     final result = _result;
@@ -64,22 +79,37 @@ class _ManualBarcodeLookupScreenState extends State<ManualBarcodeLookupScreen> {
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
-            TextField(
-              controller: _barcodeController,
-              keyboardType: TextInputType.number,
-              decoration: const InputDecoration(
-                labelText: 'Barcode',
-                border: OutlineInputBorder(),
-              ),
-            ),
-            const SizedBox(height: 16),
-            FilledButton(
-              onPressed: _isLoading ? null : _lookup,
-              child: Text(_isLoading ? 'Looking up...' : 'Lookup ownership'),
-            ),
-            const SizedBox(height: 24),
-            if (result != null) _OwnershipResultCard(result: result),
-          ],
+  TextField(
+    controller: _barcodeController,
+    keyboardType: TextInputType.number,
+    decoration: const InputDecoration(
+      labelText: 'Barcode',
+      border: OutlineInputBorder(),
+    ),
+  ),
+
+  const SizedBox(height: 12),
+
+  OutlinedButton.icon(
+    onPressed: _scanBarcode,
+    icon: const Icon(Icons.qr_code_scanner),
+    label: const Text('Scan barcode'),
+  ),
+
+  const SizedBox(height: 16),
+
+  FilledButton(
+    onPressed: _isLoading ? null : _lookup,
+    child: Text(
+      _isLoading ? 'Looking up...' : 'Lookup ownership',
+    ),
+  ),
+
+  const SizedBox(height: 24),
+
+  if (result != null)
+    _OwnershipResultCard(result: result),
+],
         ),
       ),
     );
