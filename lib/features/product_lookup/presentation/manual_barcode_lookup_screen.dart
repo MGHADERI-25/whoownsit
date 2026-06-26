@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 
-import '../../ownership/application/determine_ownership_use_case.dart';
-import '../../ownership/data/local_ownership_repository.dart';
-import '../../ownership/data/ownership_database_loader.dart';
 import '../../ownership/domain/ownership_result.dart';
 import '../../ownership/domain/ownership_result_status.dart';
-import '../application/lookup_product_by_barcode_use_case.dart';
 import '../application/lookup_product_ownership_by_barcode_use_case.dart';
-import '../data/api/open_food_facts_client.dart';
-import '../data/repository/open_food_facts_product_repository.dart';
 
 class ManualBarcodeLookupScreen extends StatefulWidget {
-  const ManualBarcodeLookupScreen({super.key});
+  const ManualBarcodeLookupScreen({
+    required this.lookupProductOwnershipByBarcodeUseCase,
+    super.key,
+  });
+
+  final LookupProductOwnershipByBarcodeUseCase
+      lookupProductOwnershipByBarcodeUseCase;
 
   @override
   State<ManualBarcodeLookupScreen> createState() =>
@@ -26,20 +26,6 @@ class _ManualBarcodeLookupScreenState extends State<ManualBarcodeLookupScreen> {
   bool _isLoading = false;
   OwnershipResult? _result;
 
-  late final LookupProductOwnershipByBarcodeUseCase _useCase =
-      LookupProductOwnershipByBarcodeUseCase(
-    lookupProductByBarcodeUseCase: LookupProductByBarcodeUseCase(
-      productRepository: OpenFoodFactsProductRepository(
-        client: OpenFoodFactsClient(),
-      ),
-    ),
-    determineOwnershipUseCase: DetermineOwnershipUseCase(
-      ownershipRepository: const LocalOwnershipRepository(
-        databaseLoader: OwnershipDatabaseLoader(),
-      ),
-    ),
-  );
-
   @override
   void dispose() {
     _barcodeController.dispose();
@@ -52,7 +38,9 @@ class _ManualBarcodeLookupScreenState extends State<ManualBarcodeLookupScreen> {
       _result = null;
     });
 
-    final result = await _useCase.execute(_barcodeController.text);
+    final result = await widget.lookupProductOwnershipByBarcodeUseCase.execute(
+      _barcodeController.text,
+    );
 
     if (!mounted) {
       return;
