@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../features/home/presentation/home_screen.dart';
+import '../features/product_lookup/presentation/manual_barcode_lookup_screen.dart';
 
 class WhoOwnsItApp extends StatelessWidget {
   const WhoOwnsItApp({super.key});
@@ -14,7 +14,7 @@ class WhoOwnsItApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
         useMaterial3: true,
       ),
-      home: const HomeScreen(),
+      home: const ManualBarcodeLookupScreen(),
     );
   }
 }
