@@ -1,0 +1,16 @@
+[
+  {
+    "id": "brand_kitkat",
+    "name": "KitKat",
+    "aliases": ["Kit Kat", "KITKAT"],
+    "normalizedNames": ["kitkat", "kit kat"],
+    "ownerCompanyId": "company_nestle_sa",
+    "relationshipType": "owned_by",
+    "verificationStatus": "maintainer_verified",
+    "sourceIds": ["source_nestle_brands_page"],
+    "effectiveFrom": "1988-01-01",
+    "effectiveTo": null,
+    "markets": [],
+    "notes": "Ownership may vary by market due to licensing arrangements."
+  }
+]

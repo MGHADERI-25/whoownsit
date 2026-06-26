@@ -1,0 +1,10 @@
+[
+  {
+    "id": "company_nestle_sa",
+    "name": "Nestlé S.A.",
+    "aliases": ["Nestle", "Nestlé"],
+    "countryCode": "CH",
+    "website": "https://www.nestle.com",
+    "notes": "Swiss multinational food and beverage company."
+  }
+]
