@@ -6,9 +6,7 @@ import '../api/product_lookup_api_client.dart';
 import '../dto/open_food_facts_product_dto.dart';
 
 class OpenFoodFactsProductRepository implements ProductRepository {
-  const OpenFoodFactsProductRepository({
-    required this.client,
-  });
+  const OpenFoodFactsProductRepository({required this.client});
 
   final ProductLookupApiClient client;
 
@@ -25,12 +23,12 @@ class OpenFoodFactsProductRepository implements ProductRepository {
       final dto = OpenFoodFactsProductDto.fromJson(response.data);
       return ProductFound(dto.toDomain());
     } on DioException catch (error) {
+      if (error.response?.statusCode == 404) {
+        return const ProductNotFound();
+      }
+
       return ProductLookupFailure(
-        'Product lookup failed: ${error.message ?? 'Network error'}',
-      );
-    } on FormatException catch (error) {
-      return ProductLookupFailure(
-        'Product lookup failed: ${error.message}',
+        'Product lookup failed. Please check your internet connection and try again.',
       );
     }
   }
