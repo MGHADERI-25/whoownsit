@@ -5,6 +5,11 @@ class BrandNameNormalizer {
     return value
         .trim()
         .toLowerCase()
-        .replaceAll(RegExp(r'\s+'), ' ');
+        .replaceAll('&', ' and ')
+        .replaceAll(RegExp(r'[®™©]'), '')
+        .replaceAll(RegExp(r'[-_/\\|]+'), ' ')
+        .replaceAll(RegExp(r'[^\w\s\u00C0-\u024F]'), '')
+        .replaceAll(RegExp(r'\s+'), ' ')
+        .trim();
   }
 }

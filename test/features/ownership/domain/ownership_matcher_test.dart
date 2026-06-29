@@ -30,6 +30,29 @@ void main() {
       markets: const [],
     );
 
+    test('matches brand when input contains trademark symbol', () {
+      const matcher = OwnershipMatcher();
+
+      final result = matcher.match(
+        inputBrandNames: const ['KitKat™'],
+        knownBrands: [kitKat],
+        knownCompanies: [nestle],
+      );
+
+      expect(result.status, OwnershipResultStatus.ownedByTarget);
+    });
+
+    test('matches brand when input uses separator variation', () {
+      const matcher = OwnershipMatcher();
+
+      final result = matcher.match(
+        inputBrandNames: const ['Kit-Kat'],
+        knownBrands: [kitKat],
+        knownCompanies: [nestle],
+      );
+
+      expect(result.status, OwnershipResultStatus.ownedByTarget);
+    });
     test('returns brandNotFound when input brand list is empty', () {
       const matcher = OwnershipMatcher();
 
