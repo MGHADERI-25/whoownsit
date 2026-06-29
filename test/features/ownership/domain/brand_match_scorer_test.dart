@@ -7,6 +7,20 @@ import 'package:whoownsit/features/ownership/domain/verification_status.dart';
 void main() {
   const scorer = BrandMatchScorer();
 
+  final nestle = Brand(
+    id: 'nestle',
+    name: 'Nestlé',
+    aliases: const ['Nestle'],
+    normalizedNames: const ['nestle', 'nestlé'],
+    ownerCompanyId: 'company_nestle_sa',
+    relationshipType: RelationshipType.ownedBy,
+    verificationStatus: VerificationStatus.maintainerVerified,
+    sourceIds: const [],
+    effectiveFrom: DateTime(1866),
+    effectiveTo: null,
+    markets: const [],
+  );
+
   final kitKat = Brand(
     id: 'kitkat',
     name: 'KitKat',
@@ -25,6 +39,15 @@ void main() {
     final match = scorer.findBestMatch(
       inputBrandNames: const ['KitKat'],
       knownBrands: [kitKat],
+    );
+
+    expect(match?.id, 'kitkat');
+  });
+
+  test('prefers more specific brand when multiple brands match', () {
+    final match = scorer.findBestMatch(
+      inputBrandNames: const ['Nestlé KitKat'],
+      knownBrands: [nestle, kitKat],
     );
 
     expect(match?.id, 'kitkat');

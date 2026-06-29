@@ -16,6 +16,20 @@ void main() {
       website: 'https://www.nestle.com',
     );
 
+    final nestleBrand = Brand(
+      id: 'brand_nestle',
+      name: 'Nestlé',
+      aliases: const ['Nestle'],
+      normalizedNames: const ['nestle', 'nestlé'],
+      ownerCompanyId: 'company_nestle_sa',
+      relationshipType: RelationshipType.ownedBy,
+      verificationStatus: VerificationStatus.maintainerVerified,
+      sourceIds: const ['source_nestle_brands_page'],
+      effectiveFrom: DateTime(1866),
+      effectiveTo: null,
+      markets: const [],
+    );
+
     final kitKat = Brand(
       id: 'brand_kitkat',
       name: 'KitKat',
@@ -30,6 +44,18 @@ void main() {
       markets: const [],
     );
 
+    test('prefers specific brand over corporate master brand', () {
+      const matcher = OwnershipMatcher();
+
+      final result = matcher.match(
+        inputBrandNames: const ['Nestlé KitKat'],
+        knownBrands: [nestleBrand, kitKat],
+        knownCompanies: [nestle],
+      );
+
+      expect(result.status, OwnershipResultStatus.ownedByTarget);
+      expect(result.matchedBrandName, 'KitKat');
+    });
     test('matches brand with product variant suffix', () {
       const matcher = OwnershipMatcher();
 
