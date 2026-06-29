@@ -162,53 +162,64 @@ class _OwnershipResultCard extends StatelessWidget {
     final presentation = _presentationForStatus(result.status);
 
     return Card(
-      elevation: 2,
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Icon(presentation.icon, color: presentation.color, size: 32),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: presentation.color.withValues(alpha: 0.12),
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(16),
+              ),
+            ),
+            child: Row(
+              children: [
+                Icon(presentation.icon, color: presentation.color, size: 32),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Text(
                     presentation.title,
-                    style: theme.textTheme.titleMedium?.copyWith(
+                    style: theme.textTheme.titleLarge?.copyWith(
                       fontWeight: FontWeight.bold,
                       color: presentation.color,
                     ),
                   ),
-                  const SizedBox(height: 8),
-                  Text(result.message),
-                  if (result.matchedBrandName != null) ...[
-                    const SizedBox(height: 12),
-                    _ResultDetailRow(
-                      label: 'Brand',
-                      value: result.matchedBrandName!,
-                    ),
-                  ],
-                  if (result.ownerCompanyName != null) ...[
-                    const SizedBox(height: 8),
-                    _ResultDetailRow(
-                      label: 'Owner',
-                      value: result.ownerCompanyName!,
-                    ),
-                  ],
-                  if (result.verificationStatus != null) ...[
-                    const SizedBox(height: 8),
-                    _ResultDetailRow(
-                      label: 'Verification',
-                      value: result.verificationStatus!.name,
-                    ),
-                  ],
-                ],
-              ),
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Text(result.message, style: theme.textTheme.bodyLarge),
+                if (result.matchedBrandName != null) ...[
+                  const SizedBox(height: 16),
+                  _ResultDetailBlock(
+                    label: 'Brand',
+                    value: result.matchedBrandName!,
+                  ),
+                ],
+                if (result.ownerCompanyName != null) ...[
+                  const SizedBox(height: 12),
+                  _ResultDetailBlock(
+                    label: 'Owner',
+                    value: result.ownerCompanyName!,
+                  ),
+                ],
+                if (result.verificationStatus != null) ...[
+                  const SizedBox(height: 12),
+                  _ResultDetailBlock(
+                    label: 'Verification',
+                    value: result.verificationStatus!.name,
+                  ),
+                ],
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -254,8 +265,8 @@ class _OwnershipResultCard extends StatelessWidget {
   }
 }
 
-class _ResultDetailRow extends StatelessWidget {
-  const _ResultDetailRow({required this.label, required this.value});
+class _ResultDetailBlock extends StatelessWidget {
+  const _ResultDetailBlock({required this.label, required this.value});
 
   final String label;
   final String value;
@@ -264,17 +275,20 @@ class _ResultDetailRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return RichText(
-      text: TextSpan(
-        style: theme.textTheme.bodyMedium,
-        children: [
-          TextSpan(
-            text: '$label: ',
-            style: const TextStyle(fontWeight: FontWeight.bold),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label.toUpperCase(),
+          style: theme.textTheme.labelSmall?.copyWith(
+            fontWeight: FontWeight.bold,
+            color: theme.colorScheme.onSurfaceVariant,
+            letterSpacing: 0.8,
           ),
-          TextSpan(text: value),
-        ],
-      ),
+        ),
+        const SizedBox(height: 4),
+        Text(value, style: theme.textTheme.bodyLarge),
+      ],
     );
   }
 }
