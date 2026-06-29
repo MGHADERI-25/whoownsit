@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'app_constants.dart';
 import '../features/product_lookup/presentation/manual_barcode_lookup_screen.dart';
 import 'app_dependencies.dart';
+import 'app_theme.dart';
 
 class WhoOwnsItApp extends StatefulWidget {
   const WhoOwnsItApp({super.key});
@@ -18,10 +19,7 @@ class _WhoOwnsItAppState extends State<WhoOwnsItApp> {
     return MaterialApp(
       title: AppConstants.appName,
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
-        useMaterial3: true,
-      ),
+      theme: AppTheme.light(),
       home: ManualBarcodeLookupScreen(
         lookupProductOwnershipByBarcodeUseCase:
             dependencies.lookupProductOwnershipByBarcodeUseCase,
