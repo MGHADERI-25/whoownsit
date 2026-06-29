@@ -42,10 +42,12 @@ class OwnershipMatcher {
       );
     }
 
-    final matchedBrand = scorer.findBestMatch(
-      inputBrandNames: normalizedInputs.toList(),
-      knownBrands: knownBrands,
-    );
+    final matchedBrand = scorer
+        .findBestMatch(
+          inputBrandNames: normalizedInputs.toList(),
+          knownBrands: knownBrands,
+        )
+        ?.brand;
 
     if (matchedBrand != null) {
       final ownerCompany = _findCompanyById(

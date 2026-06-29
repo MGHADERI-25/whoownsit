@@ -1,4 +1,5 @@
 import 'brand.dart';
+import 'brand_match.dart';
 import 'brand_name_normalizer.dart';
 
 class BrandMatchScorer {
@@ -6,7 +7,7 @@ class BrandMatchScorer {
 
   final BrandNameNormalizer normalizer;
 
-  Brand? findBestMatch({
+  BrandMatch? findBestMatch({
     required List<String> inputBrandNames,
     required List<Brand> knownBrands,
   }) {
@@ -23,30 +24,24 @@ class BrandMatchScorer {
         final candidates = _candidateNamesForBrand(brand);
 
         for (final candidate in candidates) {
-          final score = _score(
+          final scoredMatch = _score(
+            brand: brand,
             normalizedInput: normalizedInput,
             candidate: candidate,
           );
 
-          if (score == 0) {
+          if (scoredMatch == null) {
             continue;
           }
 
-          final match = _ScoredBrandMatch(
-            brand: brand,
-            score: score,
-            candidateLength: candidate.length,
-            inputPosition: normalizedInput.indexOf(candidate),
-          );
-
-          if (bestMatch == null || match.isBetterThan(bestMatch)) {
-            bestMatch = match;
+          if (bestMatch == null || scoredMatch.isBetterThan(bestMatch)) {
+            bestMatch = scoredMatch;
           }
         }
       }
     }
 
-    return bestMatch?.brand;
+    return bestMatch?.toBrandMatch();
   }
 
   Set<String> _candidateNamesForBrand(Brand brand) {
@@ -57,24 +52,56 @@ class BrandMatchScorer {
     }..removeWhere((name) => name.isEmpty);
   }
 
-  int _score({required String normalizedInput, required String candidate}) {
+  _ScoredBrandMatch? _score({
+    required Brand brand,
+    required String normalizedInput,
+    required String candidate,
+  }) {
     if (normalizedInput == candidate) {
-      return 100;
+      return _ScoredBrandMatch(
+        brand: brand,
+        score: 100,
+        candidateLength: candidate.length,
+        inputPosition: normalizedInput.indexOf(candidate),
+        confidence: BrandMatchConfidence.exact,
+        reason: BrandMatchReason.exactName,
+      );
     }
 
     if (_containsWholePhrase(normalizedInput, candidate)) {
-      return 80;
+      return _ScoredBrandMatch(
+        brand: brand,
+        score: 80,
+        candidateLength: candidate.length,
+        inputPosition: normalizedInput.indexOf(candidate),
+        confidence: BrandMatchConfidence.strong,
+        reason: BrandMatchReason.wholePhrase,
+      );
     }
 
     if (normalizedInput.startsWith(candidate)) {
-      return 70;
+      return _ScoredBrandMatch(
+        brand: brand,
+        score: 70,
+        candidateLength: candidate.length,
+        inputPosition: normalizedInput.indexOf(candidate),
+        confidence: BrandMatchConfidence.strong,
+        reason: BrandMatchReason.prefix,
+      );
     }
 
     if (candidate.startsWith(normalizedInput)) {
-      return 60;
+      return _ScoredBrandMatch(
+        brand: brand,
+        score: 60,
+        candidateLength: candidate.length,
+        inputPosition: normalizedInput.indexOf(candidate),
+        confidence: BrandMatchConfidence.possible,
+        reason: BrandMatchReason.prefix,
+      );
     }
 
-    return 0;
+    return null;
   }
 
   bool _containsWholePhrase(String input, String candidate) {
@@ -91,12 +118,16 @@ class _ScoredBrandMatch {
     required this.score,
     required this.candidateLength,
     required this.inputPosition,
+    required this.confidence,
+    required this.reason,
   });
 
   final Brand brand;
   final int score;
   final int candidateLength;
   final int inputPosition;
+  final BrandMatchConfidence confidence;
+  final BrandMatchReason reason;
 
   bool isBetterThan(_ScoredBrandMatch other) {
     if (score != other.score) {
@@ -108,5 +139,9 @@ class _ScoredBrandMatch {
     }
 
     return inputPosition > other.inputPosition;
+  }
+
+  BrandMatch toBrandMatch() {
+    return BrandMatch(brand: brand, confidence: confidence, reason: reason);
   }
 }

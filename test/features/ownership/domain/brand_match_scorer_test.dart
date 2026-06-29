@@ -41,7 +41,7 @@ void main() {
       knownBrands: [kitKat],
     );
 
-    expect(match?.id, 'kitkat');
+    expect(match?.brand.id, 'kitkat');
   });
 
   test('prefers more specific brand when multiple brands match', () {
@@ -50,7 +50,7 @@ void main() {
       knownBrands: [nestle, kitKat],
     );
 
-    expect(match?.id, 'kitkat');
+    expect(match?.brand.id, 'kitkat');
   });
 
   test('matches brand with suffix', () {
@@ -59,7 +59,7 @@ void main() {
       knownBrands: [kitKat],
     );
 
-    expect(match?.id, 'kitkat');
+    expect(match?.brand.id, 'kitkat');
   });
 
   test('matches brand with prefix', () {
@@ -68,7 +68,7 @@ void main() {
       knownBrands: [kitKat],
     );
 
-    expect(match?.id, 'kitkat');
+    expect(match?.brand.id, 'kitkat');
   });
 
   test('returns null when nothing matches', () {
