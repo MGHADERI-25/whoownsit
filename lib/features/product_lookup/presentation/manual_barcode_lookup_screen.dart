@@ -65,6 +65,7 @@ class _ManualBarcodeLookupScreenState extends State<ManualBarcodeLookupScreen> {
     }
 
     _barcodeController.text = scannedBarcode;
+    await _lookup();
   }
 
   @override
