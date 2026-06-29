@@ -6,7 +6,27 @@
     "publisher": "Nestlé",
     "sourceType": "company_website",
     "publishedAt": null,
-    "accessedAt": "2026-06-26",
+    "accessedAt": "2026-06-29",
     "notes": "Official Nestlé brand reference page."
+  },
+  {
+    "id": "source_nestle_drinks_page",
+    "title": "Nestlé drinks brands",
+    "url": "https://www.nestle.com/brands/drinks",
+    "publisher": "Nestlé",
+    "sourceType": "company_website",
+    "publishedAt": null,
+    "accessedAt": "2026-06-29",
+    "notes": "Official Nestlé drinks brand reference page."
+  },
+  {
+    "id": "source_nestle_dairy_page",
+    "title": "Nestlé dairy brands",
+    "url": "https://www.nestle.com/brands/dairy",
+    "publisher": "Nestlé",
+    "sourceType": "company_website",
+    "publishedAt": null,
+    "accessedAt": "2026-06-29",
+    "notes": "Official Nestlé dairy brand reference page."
   }
 ]
