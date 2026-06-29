@@ -30,6 +30,44 @@ void main() {
       markets: const [],
     );
 
+    test('matches brand with product variant suffix', () {
+      const matcher = OwnershipMatcher();
+
+      final result = matcher.match(
+        inputBrandNames: const ['KitKat Chunky'],
+        knownBrands: [kitKat],
+        knownCompanies: [nestle],
+      );
+
+      expect(result.status, OwnershipResultStatus.ownedByTarget);
+      expect(result.matchedBrandName, 'KitKat');
+    });
+
+    test('matches brand with company prefix', () {
+      const matcher = OwnershipMatcher();
+
+      final result = matcher.match(
+        inputBrandNames: const ['Nestlé KitKat'],
+        knownBrands: [kitKat],
+        knownCompanies: [nestle],
+      );
+
+      expect(result.status, OwnershipResultStatus.ownedByTarget);
+      expect(result.matchedBrandName, 'KitKat');
+    });
+
+    test('matches brand from multiple Open Food Facts brand values', () {
+      const matcher = OwnershipMatcher();
+
+      final result = matcher.match(
+        inputBrandNames: const ['Unknown Distributor', 'KitKat Chunky'],
+        knownBrands: [kitKat],
+        knownCompanies: [nestle],
+      );
+
+      expect(result.status, OwnershipResultStatus.ownedByTarget);
+      expect(result.matchedBrandName, 'KitKat');
+    });
     test('matches brand when input contains trademark symbol', () {
       const matcher = OwnershipMatcher();
 
