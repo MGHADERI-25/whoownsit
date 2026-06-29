@@ -12,7 +12,7 @@ class ManualBarcodeLookupScreen extends StatefulWidget {
   });
 
   final LookupProductOwnershipByBarcodeUseCase
-      lookupProductOwnershipByBarcodeUseCase;
+  lookupProductOwnershipByBarcodeUseCase;
 
   @override
   State<ManualBarcodeLookupScreen> createState() =>
@@ -55,9 +55,7 @@ class _ManualBarcodeLookupScreenState extends State<ManualBarcodeLookupScreen> {
 
   Future<void> _scanBarcode() async {
     final scannedBarcode = await Navigator.of(context).push<String>(
-      MaterialPageRoute(
-        builder: (_) => const BarcodeScannerScreen(),
-      ),
+      MaterialPageRoute(builder: (_) => const BarcodeScannerScreen()),
     );
 
     if (scannedBarcode == null || !mounted) {
@@ -73,49 +71,48 @@ class _ManualBarcodeLookupScreenState extends State<ManualBarcodeLookupScreen> {
     final result = _result;
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('WhoOwnsIt'),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          children: [
-  TextField(
-    controller: _barcodeController,
-    keyboardType: TextInputType.number,
-    decoration: const InputDecoration(
-      labelText: 'Barcode',
-      border: OutlineInputBorder(),
-    ),
-  ),
+      appBar: AppBar(title: const Text('WhoOwnsIt')),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            children: [
+              TextField(
+                controller: _barcodeController,
+                keyboardType: TextInputType.number,
+                decoration: const InputDecoration(
+                  labelText: 'Barcode',
+                  border: OutlineInputBorder(),
+                ),
+              ),
 
-  const SizedBox(height: 12),
+              const SizedBox(height: 12),
 
-  OutlinedButton.icon(
-    onPressed: _isLoading ? null : _scanBarcode,
-    icon: const Icon(Icons.qr_code_scanner),
-    label: const Text('Scan barcode'),
-  ),
+              OutlinedButton.icon(
+                onPressed: _isLoading ? null : _scanBarcode,
+                icon: const Icon(Icons.qr_code_scanner),
+                label: const Text('Scan barcode'),
+              ),
 
-  const SizedBox(height: 16),
+              const SizedBox(height: 16),
 
-  FilledButton.icon(
-    onPressed: _isLoading ? null : _lookup,
-    icon: _isLoading
-      ? const SizedBox(
-          width: 16,
-          height: 16,
-          child: CircularProgressIndicator(strokeWidth: 2),
-        )
-      : const Icon(Icons.search),
-    label: Text(_isLoading ? 'Looking up...' : 'Lookup ownership'),
-  ),
+              FilledButton.icon(
+                onPressed: _isLoading ? null : _lookup,
+                icon: _isLoading
+                    ? const SizedBox(
+                        width: 16,
+                        height: 16,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      )
+                    : const Icon(Icons.search),
+                label: Text(_isLoading ? 'Looking up...' : 'Lookup ownership'),
+              ),
 
-  const SizedBox(height: 24),
+              const SizedBox(height: 24),
 
-  if (result != null)
-    _OwnershipResultCard(result: result),
-],
+              if (result != null) _OwnershipResultCard(result: result),
+            ],
+          ),
         ),
       ),
     );
@@ -123,9 +120,7 @@ class _ManualBarcodeLookupScreenState extends State<ManualBarcodeLookupScreen> {
 }
 
 class _OwnershipResultCard extends StatelessWidget {
-  const _OwnershipResultCard({
-    required this.result,
-  });
+  const _OwnershipResultCard({required this.result});
 
   final OwnershipResult result;
 
@@ -141,11 +136,7 @@ class _OwnershipResultCard extends StatelessWidget {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Icon(
-              presentation.icon,
-              color: presentation.color,
-              size: 32,
-            ),
+            Icon(presentation.icon, color: presentation.color, size: 32),
             const SizedBox(width: 12),
             Expanded(
               child: Column(
@@ -193,49 +184,46 @@ class _OwnershipResultCard extends StatelessWidget {
   _ResultPresentation _presentationForStatus(OwnershipResultStatus status) {
     return switch (status) {
       OwnershipResultStatus.ownedByTarget => _ResultPresentation(
-          title: 'Owned by Nestlé',
-          icon: Icons.warning_amber_rounded,
-          color: Colors.red,
-        ),
+        title: 'Owned by Nestlé',
+        icon: Icons.warning_amber_rounded,
+        color: Colors.red,
+      ),
       OwnershipResultStatus.subsidiaryOfTarget => _ResultPresentation(
-          title: 'Nestlé subsidiary',
-          icon: Icons.account_tree_outlined,
-          color: Colors.deepOrange,
-        ),
+        title: 'Nestlé subsidiary',
+        icon: Icons.account_tree_outlined,
+        color: Colors.deepOrange,
+      ),
       OwnershipResultStatus.relatedToTarget => _ResultPresentation(
-          title: 'Related to Nestlé',
-          icon: Icons.link,
-          color: Colors.orange,
-        ),
+        title: 'Related to Nestlé',
+        icon: Icons.link,
+        color: Colors.orange,
+      ),
       OwnershipResultStatus.notTarget => _ResultPresentation(
-          title: 'Not Nestlé',
-          icon: Icons.check_circle_outline,
-          color: Colors.green,
-        ),
+        title: 'Not Nestlé',
+        icon: Icons.check_circle_outline,
+        color: Colors.green,
+      ),
       OwnershipResultStatus.unknown => _ResultPresentation(
-          title: 'Unknown',
-          icon: Icons.help_outline,
-          color: Colors.blueGrey,
-        ),
+        title: 'Unknown',
+        icon: Icons.help_outline,
+        color: Colors.blueGrey,
+      ),
       OwnershipResultStatus.productNotFound => _ResultPresentation(
-          title: 'Product not found',
-          icon: Icons.search_off,
-          color: Colors.blueGrey,
-        ),
+        title: 'Product not found',
+        icon: Icons.search_off,
+        color: Colors.blueGrey,
+      ),
       OwnershipResultStatus.brandNotFound => _ResultPresentation(
-          title: 'Brand not found',
-          icon: Icons.sell_outlined,
-          color: Colors.blueGrey,
-        ),
+        title: 'Brand not found',
+        icon: Icons.sell_outlined,
+        color: Colors.blueGrey,
+      ),
     };
   }
 }
 
 class _ResultDetailRow extends StatelessWidget {
-  const _ResultDetailRow({
-    required this.label,
-    required this.value,
-  });
+  const _ResultDetailRow({required this.label, required this.value});
 
   final String label;
   final String value;
