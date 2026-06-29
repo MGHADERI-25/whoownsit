@@ -35,11 +35,70 @@ class _BarcodeScannerScreenState extends State<BarcodeScannerScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Scan barcode'),
+      body: Stack(
+        fit: StackFit.expand,
+        children: [
+          MobileScanner(
+            onDetect: _handleDetect,
+          ),
+          const _ScannerOverlay(),
+          SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Align(
+                alignment: Alignment.topLeft,
+                child: IconButton.filled(
+                  onPressed: () => Navigator.of(context).pop(),
+                  icon: const Icon(Icons.close),
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
-      body: MobileScanner(
-        onDetect: _handleDetect,
+    );
+  }
+}
+
+class _ScannerOverlay extends StatelessWidget {
+  const _ScannerOverlay();
+
+  @override
+  Widget build(BuildContext context) {
+    return IgnorePointer(
+      child: Column(
+        children: [
+          const Spacer(),
+          Container(
+            width: 280,
+            height: 160,
+            decoration: BoxDecoration(
+              border: Border.all(
+                color: Colors.white,
+                width: 3,
+              ),
+              borderRadius: BorderRadius.circular(16),
+            ),
+          ),
+          const SizedBox(height: 24),
+          Container(
+            margin: const EdgeInsets.symmetric(horizontal: 24),
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: Colors.black54,
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: const Text(
+              'Place the barcode inside the frame',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 16,
+              ),
+            ),
+          ),
+          const Spacer(),
+        ],
       ),
     );
   }
