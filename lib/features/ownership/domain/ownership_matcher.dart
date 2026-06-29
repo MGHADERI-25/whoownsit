@@ -1,4 +1,5 @@
 import 'brand.dart';
+import 'brand_match.dart';
 import 'brand_match_scorer.dart';
 import 'brand_name_normalizer.dart';
 import 'company.dart';
@@ -42,14 +43,13 @@ class OwnershipMatcher {
       );
     }
 
-    final matchedBrand = scorer
-        .findBestMatch(
-          inputBrandNames: normalizedInputs.toList(),
-          knownBrands: knownBrands,
-        )
-        ?.brand;
+    final brandMatch = scorer.findBestMatch(
+      inputBrandNames: normalizedInputs.toList(),
+      knownBrands: knownBrands,
+    );
 
-    if (matchedBrand != null) {
+    if (brandMatch != null) {
+      final matchedBrand = brandMatch.brand;
       final ownerCompany = _findCompanyById(
         knownCompanies,
         matchedBrand.ownerCompanyId,
@@ -58,6 +58,7 @@ class OwnershipMatcher {
       return _buildResultForBrand(
         brand: matchedBrand,
         ownerCompany: ownerCompany,
+        brandMatch: brandMatch,
       );
     }
 
@@ -80,6 +81,7 @@ class OwnershipMatcher {
   OwnershipResult _buildResultForBrand({
     required Brand brand,
     required Company? ownerCompany,
+    BrandMatch? brandMatch,
   }) {
     final isTargetCompany = brand.ownerCompanyId == targetCompanyId;
     final isStronglyVerified =
@@ -93,6 +95,8 @@ class OwnershipMatcher {
         matchedBrandName: brand.name,
         ownerCompanyId: brand.ownerCompanyId,
         ownerCompanyName: ownerCompany?.name,
+        matchConfidence: brandMatch?.confidence,
+        matchReason: brandMatch?.reason,
         relationshipType: brand.relationshipType,
         verificationStatus: brand.verificationStatus,
         sourceIds: brand.sourceIds,
@@ -107,6 +111,8 @@ class OwnershipMatcher {
         matchedBrandName: brand.name,
         ownerCompanyId: brand.ownerCompanyId,
         ownerCompanyName: ownerCompany?.name,
+        matchConfidence: brandMatch?.confidence,
+        matchReason: brandMatch?.reason,
         relationshipType: brand.relationshipType,
         verificationStatus: brand.verificationStatus,
         sourceIds: brand.sourceIds,
@@ -121,6 +127,8 @@ class OwnershipMatcher {
         matchedBrandName: brand.name,
         ownerCompanyId: brand.ownerCompanyId,
         ownerCompanyName: ownerCompany?.name,
+        matchConfidence: brandMatch?.confidence,
+        matchReason: brandMatch?.reason,
         relationshipType: brand.relationshipType,
         verificationStatus: brand.verificationStatus,
         sourceIds: brand.sourceIds,
@@ -133,6 +141,8 @@ class OwnershipMatcher {
         matchedBrandName: brand.name,
         ownerCompanyId: brand.ownerCompanyId,
         ownerCompanyName: ownerCompany?.name,
+        matchConfidence: brandMatch?.confidence,
+        matchReason: brandMatch?.reason,
         relationshipType: brand.relationshipType,
         verificationStatus: brand.verificationStatus,
         sourceIds: brand.sourceIds,
@@ -149,6 +159,8 @@ class OwnershipMatcher {
         matchedBrandName: brand.name,
         ownerCompanyId: brand.ownerCompanyId,
         ownerCompanyName: ownerCompany?.name,
+        matchConfidence: brandMatch?.confidence,
+        matchReason: brandMatch?.reason,
         relationshipType: brand.relationshipType,
         verificationStatus: brand.verificationStatus,
         sourceIds: brand.sourceIds,
@@ -161,6 +173,8 @@ class OwnershipMatcher {
         matchedBrandName: brand.name,
         ownerCompanyId: brand.ownerCompanyId,
         ownerCompanyName: ownerCompany?.name,
+        matchConfidence: brandMatch?.confidence,
+        matchReason: brandMatch?.reason,
         relationshipType: brand.relationshipType,
         verificationStatus: brand.verificationStatus,
         sourceIds: brand.sourceIds,
@@ -172,6 +186,8 @@ class OwnershipMatcher {
         matchedBrandName: brand.name,
         ownerCompanyId: brand.ownerCompanyId,
         ownerCompanyName: ownerCompany?.name,
+        matchConfidence: brandMatch?.confidence,
+        matchReason: brandMatch?.reason,
         relationshipType: brand.relationshipType,
         verificationStatus: brand.verificationStatus,
         sourceIds: brand.sourceIds,
