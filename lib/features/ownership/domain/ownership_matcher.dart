@@ -1,4 +1,5 @@
 import 'brand.dart';
+import 'brand_match_scorer.dart';
 import 'brand_name_normalizer.dart';
 import 'company.dart';
 import 'ownership_result.dart';
@@ -10,10 +11,12 @@ class OwnershipMatcher {
   const OwnershipMatcher({
     this.targetCompanyId = 'company_nestle_sa',
     this.normalizer = const BrandNameNormalizer(),
+    this.scorer = const BrandMatchScorer(),
   });
 
   final String targetCompanyId;
   final BrandNameNormalizer normalizer;
+  final BrandMatchScorer scorer;
 
   OwnershipResult match({
     required List<String> inputBrandNames,
@@ -39,26 +42,19 @@ class OwnershipMatcher {
       );
     }
 
-    for (final brand in knownBrands) {
-      final knownNames = <String>{
-        normalizer.normalize(brand.name),
-        ...brand.aliases.map(normalizer.normalize),
-        ...brand.normalizedNames.map(normalizer.normalize),
-      };
+    final matchedBrand = scorer.findBestMatch(
+      inputBrandNames: normalizedInputs.toList(),
+      knownBrands: knownBrands,
+    );
 
-      final hasMatch = normalizedInputs.any(knownNames.contains);
-
-      if (!hasMatch) {
-        continue;
-      }
-
+    if (matchedBrand != null) {
       final ownerCompany = _findCompanyById(
         knownCompanies,
-        brand.ownerCompanyId,
+        matchedBrand.ownerCompanyId,
       );
 
       return _buildResultForBrand(
-        brand: brand,
+        brand: matchedBrand,
         ownerCompany: ownerCompany,
       );
     }
@@ -118,65 +114,67 @@ class OwnershipMatcher {
 
     return switch (brand.relationshipType) {
       RelationshipType.ownedBy => OwnershipResult(
-          status: OwnershipResultStatus.ownedByTarget,
-          matchedBrandId: brand.id,
-          matchedBrandName: brand.name,
-          ownerCompanyId: brand.ownerCompanyId,
-          ownerCompanyName: ownerCompany?.name,
-          relationshipType: brand.relationshipType,
-          verificationStatus: brand.verificationStatus,
-          sourceIds: brand.sourceIds,
-          message: '${brand.name} is listed as owned by ${ownerCompany?.name ?? 'the target company'}.',
-        ),
+        status: OwnershipResultStatus.ownedByTarget,
+        matchedBrandId: brand.id,
+        matchedBrandName: brand.name,
+        ownerCompanyId: brand.ownerCompanyId,
+        ownerCompanyName: ownerCompany?.name,
+        relationshipType: brand.relationshipType,
+        verificationStatus: brand.verificationStatus,
+        sourceIds: brand.sourceIds,
+        message:
+            '${brand.name} is listed as owned by ${ownerCompany?.name ?? 'the target company'}.',
+      ),
       RelationshipType.subsidiaryOf => OwnershipResult(
-          status: OwnershipResultStatus.subsidiaryOfTarget,
-          matchedBrandId: brand.id,
-          matchedBrandName: brand.name,
-          ownerCompanyId: brand.ownerCompanyId,
-          ownerCompanyName: ownerCompany?.name,
-          relationshipType: brand.relationshipType,
-          verificationStatus: brand.verificationStatus,
-          sourceIds: brand.sourceIds,
-          message: '${brand.name} is listed as a subsidiary of ${ownerCompany?.name ?? 'the target company'}.',
-        ),
+        status: OwnershipResultStatus.subsidiaryOfTarget,
+        matchedBrandId: brand.id,
+        matchedBrandName: brand.name,
+        ownerCompanyId: brand.ownerCompanyId,
+        ownerCompanyName: ownerCompany?.name,
+        relationshipType: brand.relationshipType,
+        verificationStatus: brand.verificationStatus,
+        sourceIds: brand.sourceIds,
+        message:
+            '${brand.name} is listed as a subsidiary of ${ownerCompany?.name ?? 'the target company'}.',
+      ),
       RelationshipType.relatedTo ||
       RelationshipType.controlledBy ||
       RelationshipType.licensedBy ||
       RelationshipType.distributedBy ||
-      RelationshipType.jointVenture =>
-        OwnershipResult(
-          status: OwnershipResultStatus.relatedToTarget,
-          matchedBrandId: brand.id,
-          matchedBrandName: brand.name,
-          ownerCompanyId: brand.ownerCompanyId,
-          ownerCompanyName: ownerCompany?.name,
-          relationshipType: brand.relationshipType,
-          verificationStatus: brand.verificationStatus,
-          sourceIds: brand.sourceIds,
-          message: '${brand.name} is listed as related to ${ownerCompany?.name ?? 'the target company'}.',
-        ),
+      RelationshipType.jointVenture => OwnershipResult(
+        status: OwnershipResultStatus.relatedToTarget,
+        matchedBrandId: brand.id,
+        matchedBrandName: brand.name,
+        ownerCompanyId: brand.ownerCompanyId,
+        ownerCompanyName: ownerCompany?.name,
+        relationshipType: brand.relationshipType,
+        verificationStatus: brand.verificationStatus,
+        sourceIds: brand.sourceIds,
+        message:
+            '${brand.name} is listed as related to ${ownerCompany?.name ?? 'the target company'}.',
+      ),
       RelationshipType.notOwnedBy => OwnershipResult(
-          status: OwnershipResultStatus.notTarget,
-          matchedBrandId: brand.id,
-          matchedBrandName: brand.name,
-          ownerCompanyId: brand.ownerCompanyId,
-          ownerCompanyName: ownerCompany?.name,
-          relationshipType: brand.relationshipType,
-          verificationStatus: brand.verificationStatus,
-          sourceIds: brand.sourceIds,
-          message: '${brand.name} is not listed as owned by the target company.',
-        ),
+        status: OwnershipResultStatus.notTarget,
+        matchedBrandId: brand.id,
+        matchedBrandName: brand.name,
+        ownerCompanyId: brand.ownerCompanyId,
+        ownerCompanyName: ownerCompany?.name,
+        relationshipType: brand.relationshipType,
+        verificationStatus: brand.verificationStatus,
+        sourceIds: brand.sourceIds,
+        message: '${brand.name} is not listed as owned by the target company.',
+      ),
       RelationshipType.unknown => OwnershipResult(
-          status: OwnershipResultStatus.unknown,
-          matchedBrandId: brand.id,
-          matchedBrandName: brand.name,
-          ownerCompanyId: brand.ownerCompanyId,
-          ownerCompanyName: ownerCompany?.name,
-          relationshipType: brand.relationshipType,
-          verificationStatus: brand.verificationStatus,
-          sourceIds: brand.sourceIds,
-          message: 'Ownership status for ${brand.name} is unknown.',
-        ),
+        status: OwnershipResultStatus.unknown,
+        matchedBrandId: brand.id,
+        matchedBrandName: brand.name,
+        ownerCompanyId: brand.ownerCompanyId,
+        ownerCompanyName: ownerCompany?.name,
+        relationshipType: brand.relationshipType,
+        verificationStatus: brand.verificationStatus,
+        sourceIds: brand.sourceIds,
+        message: 'Ownership status for ${brand.name} is unknown.',
+      ),
     };
   }
 }
