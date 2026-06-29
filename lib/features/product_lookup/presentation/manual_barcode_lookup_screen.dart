@@ -69,6 +69,7 @@ class _ManualBarcodeLookupScreenState extends State<ManualBarcodeLookupScreen> {
   @override
   Widget build(BuildContext context) {
     final result = _result;
+    final theme = Theme.of(context);
 
     return Scaffold(
       appBar: AppBar(title: const Text(AppConstants.appName)),
@@ -76,40 +77,71 @@ class _ManualBarcodeLookupScreenState extends State<ManualBarcodeLookupScreen> {
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(16),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              TextField(
-                controller: _barcodeController,
-                keyboardType: TextInputType.number,
-                decoration: const InputDecoration(
-                  labelText: 'Barcode',
-                  border: OutlineInputBorder(),
+              Text(
+                AppConstants.appTagline,
+                textAlign: TextAlign.center,
+                style: theme.textTheme.titleMedium?.copyWith(
+                  color: theme.colorScheme.onSurfaceVariant,
                 ),
               ),
-
-              const SizedBox(height: 12),
-
-              OutlinedButton.icon(
-                onPressed: _isLoading ? null : _scanBarcode,
-                icon: const Icon(Icons.qr_code_scanner),
-                label: const Text('Scan barcode'),
-              ),
-
-              const SizedBox(height: 16),
-
-              FilledButton.icon(
-                onPressed: _isLoading ? null : _lookup,
-                icon: _isLoading
-                    ? const SizedBox(
-                        width: 16,
-                        height: 16,
-                        child: CircularProgressIndicator(strokeWidth: 2),
-                      )
-                    : const Icon(Icons.search),
-                label: Text(_isLoading ? 'Looking up...' : 'Lookup ownership'),
-              ),
-
               const SizedBox(height: 24),
-
+              Card(
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Text(
+                        'Product lookup',
+                        style: theme.textTheme.titleLarge?.copyWith(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        'Scan a barcode or enter one manually to check product ownership.',
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          color: theme.colorScheme.onSurfaceVariant,
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      TextField(
+                        controller: _barcodeController,
+                        keyboardType: TextInputType.number,
+                        decoration: const InputDecoration(
+                          labelText: 'Barcode',
+                          prefixIcon: Icon(Icons.numbers),
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      OutlinedButton.icon(
+                        onPressed: _isLoading ? null : _scanBarcode,
+                        icon: const Icon(Icons.qr_code_scanner),
+                        label: const Text('Scan barcode'),
+                      ),
+                      const SizedBox(height: 12),
+                      FilledButton.icon(
+                        onPressed: _isLoading ? null : _lookup,
+                        icon: _isLoading
+                            ? const SizedBox(
+                                width: 16,
+                                height: 16,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                ),
+                              )
+                            : const Icon(Icons.search),
+                        label: Text(
+                          _isLoading ? 'Looking up...' : 'Lookup ownership',
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(height: 24),
               if (result != null) _OwnershipResultCard(result: result),
             ],
           ),
