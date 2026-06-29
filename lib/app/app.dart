@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'app_constants.dart';
 import '../features/product_lookup/presentation/manual_barcode_lookup_screen.dart';
 import 'app_dependencies.dart';
 
@@ -16,7 +16,7 @@ class _WhoOwnsItAppState extends State<WhoOwnsItApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'WhoOwnsIt',
+      title: AppConstants.appName,
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),

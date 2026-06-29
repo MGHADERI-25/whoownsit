@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../scan/presentation/barcode_scanner_screen.dart';
-
+import '../../../app/app_constants.dart';
 import '../../ownership/domain/ownership_result.dart';
 import '../../ownership/domain/ownership_result_status.dart';
 import '../application/lookup_product_ownership_by_barcode_use_case.dart';
@@ -71,7 +71,7 @@ class _ManualBarcodeLookupScreenState extends State<ManualBarcodeLookupScreen> {
     final result = _result;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('WhoOwnsIt')),
+      appBar: AppBar(title: const Text(AppConstants.appName)),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(16),
