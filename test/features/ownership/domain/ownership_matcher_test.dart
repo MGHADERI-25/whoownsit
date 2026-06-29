@@ -5,7 +5,7 @@ import 'package:whoownsit/features/ownership/domain/ownership_matcher.dart';
 import 'package:whoownsit/features/ownership/domain/ownership_result_status.dart';
 import 'package:whoownsit/features/ownership/domain/relationship_type.dart';
 import 'package:whoownsit/features/ownership/domain/verification_status.dart';
-
+import 'package:whoownsit/features/ownership/domain/brand_match.dart';
 
 void main() {
   group('OwnershipMatcher', () {
@@ -45,6 +45,31 @@ void main() {
       markets: const [],
     );
 
+    test('includes exact match confidence in ownership result', () {
+      const matcher = OwnershipMatcher();
+
+      final result = matcher.match(
+        inputBrandNames: const ['KitKat'],
+        knownBrands: [kitKat],
+        knownCompanies: [nestle],
+      );
+
+      expect(result.matchConfidence, BrandMatchConfidence.exact);
+      expect(result.matchReason, BrandMatchReason.exactName);
+    });
+
+    test('includes strong match confidence in ownership result', () {
+      const matcher = OwnershipMatcher();
+
+      final result = matcher.match(
+        inputBrandNames: const ['KitKat Chunky'],
+        knownBrands: [kitKat],
+        knownCompanies: [nestle],
+      );
+
+      expect(result.matchConfidence, BrandMatchConfidence.strong);
+      expect(result.matchReason, BrandMatchReason.wholePhrase);
+    });
     test('prefers specific brand over corporate master brand', () {
       const matcher = OwnershipMatcher();
 
