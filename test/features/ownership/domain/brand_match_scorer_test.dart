@@ -3,6 +3,7 @@ import 'package:whoownsit/features/ownership/domain/brand.dart';
 import 'package:whoownsit/features/ownership/domain/brand_match_scorer.dart';
 import 'package:whoownsit/features/ownership/domain/relationship_type.dart';
 import 'package:whoownsit/features/ownership/domain/verification_status.dart';
+import 'package:whoownsit/features/ownership/domain/brand_match.dart';
 
 void main() {
   const scorer = BrandMatchScorer();
@@ -35,6 +36,35 @@ void main() {
     markets: const [],
   );
 
+  test('returns exact confidence for exact brand match', () {
+    final match = scorer.findBestMatch(
+      inputBrandNames: const ['KitKat'],
+      knownBrands: [kitKat],
+    );
+
+    expect(match?.confidence, BrandMatchConfidence.exact);
+    expect(match?.reason, BrandMatchReason.exactName);
+  });
+
+  test('returns strong confidence for whole phrase match', () {
+    final match = scorer.findBestMatch(
+      inputBrandNames: const ['KitKat Chunky'],
+      knownBrands: [kitKat],
+    );
+
+    expect(match?.confidence, BrandMatchConfidence.strong);
+    expect(match?.reason, BrandMatchReason.wholePhrase);
+  });
+
+  test('returns possible confidence when known brand starts with input', () {
+    final match = scorer.findBestMatch(
+      inputBrandNames: const ['Kit'],
+      knownBrands: [kitKat],
+    );
+
+    expect(match?.confidence, BrandMatchConfidence.possible);
+    expect(match?.reason, BrandMatchReason.prefix);
+  });
   test('matches exact brand', () {
     final match = scorer.findBestMatch(
       inputBrandNames: const ['KitKat'],

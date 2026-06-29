@@ -6,6 +6,7 @@ import 'package:whoownsit/features/ownership/domain/ownership_result_status.dart
 import 'package:whoownsit/features/ownership/domain/relationship_type.dart';
 import 'package:whoownsit/features/ownership/domain/verification_status.dart';
 
+
 void main() {
   group('OwnershipMatcher', () {
     final nestle = Company(
