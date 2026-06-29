@@ -92,18 +92,23 @@ class _ManualBarcodeLookupScreenState extends State<ManualBarcodeLookupScreen> {
   const SizedBox(height: 12),
 
   OutlinedButton.icon(
-    onPressed: _scanBarcode,
+    onPressed: _isLoading ? null : _scanBarcode,
     icon: const Icon(Icons.qr_code_scanner),
     label: const Text('Scan barcode'),
   ),
 
   const SizedBox(height: 16),
 
-  FilledButton(
+  FilledButton.icon(
     onPressed: _isLoading ? null : _lookup,
-    child: Text(
-      _isLoading ? 'Looking up...' : 'Lookup ownership',
-    ),
+    icon: _isLoading
+      ? const SizedBox(
+          width: 16,
+          height: 16,
+          child: CircularProgressIndicator(strokeWidth: 2),
+        )
+      : const Icon(Icons.search),
+    label: Text(_isLoading ? 'Looking up...' : 'Lookup ownership'),
   ),
 
   const SizedBox(height: 24),
