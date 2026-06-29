@@ -49,6 +49,8 @@ Future<void> main() async {
     stdout.writeln('Status: ${result.status}');
     stdout.writeln('Matched brand: ${result.matchedBrandName}');
     stdout.writeln('Owner: ${result.ownerCompanyName}');
+    stdout.writeln('Confidence: ${result.matchConfidence}');
+    stdout.writeln('Reason: ${result.matchReason}');
     stdout.writeln('Message: ${result.message}');
     stdout.writeln('---');
   }
