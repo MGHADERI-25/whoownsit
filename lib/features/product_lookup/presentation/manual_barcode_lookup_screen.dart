@@ -4,6 +4,7 @@ import '../../../app/app_constants.dart';
 import '../../ownership/domain/ownership_result.dart';
 import '../../ownership/domain/ownership_result_status.dart';
 import '../application/lookup_product_ownership_by_barcode_use_case.dart';
+import '../../ownership/domain/brand_match_label_formatter.dart';
 
 class ManualBarcodeLookupScreen extends StatefulWidget {
   const ManualBarcodeLookupScreen({
@@ -160,6 +161,7 @@ class _OwnershipResultCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final presentation = _presentationForStatus(result.status);
+    const matchLabelFormatter = BrandMatchLabelFormatter();
 
     return Card(
       child: Column(
@@ -214,6 +216,22 @@ class _OwnershipResultCard extends StatelessWidget {
                   _ResultDetailBlock(
                     label: 'Verification',
                     value: result.verificationStatus!.name,
+                  ),
+                ],
+                if (result.matchConfidence != null) ...[
+                  const SizedBox(height: 12),
+                  _ResultDetailBlock(
+                    label: 'Match quality',
+                    value: matchLabelFormatter.confidenceLabel(
+                      result.matchConfidence!,
+                    ),
+                  ),
+                ],
+                if (result.matchReason != null) ...[
+                  const SizedBox(height: 12),
+                  _ResultDetailBlock(
+                    label: 'Match reason',
+                    value: matchLabelFormatter.reasonLabel(result.matchReason!),
                   ),
                 ],
               ],
