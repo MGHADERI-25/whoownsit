@@ -3,6 +3,8 @@ import 'app_constants.dart';
 import '../features/product_lookup/presentation/manual_barcode_lookup_screen.dart';
 import 'app_dependencies.dart';
 import 'app_theme.dart';
+import 'package:flutter/foundation.dart';
+import '../features/ownership/presentation/developer_brand_lookup_screen.dart';
 
 class WhoOwnsItApp extends StatefulWidget {
   const WhoOwnsItApp({super.key});
@@ -23,6 +25,12 @@ class _WhoOwnsItAppState extends State<WhoOwnsItApp> {
       home: ManualBarcodeLookupScreen(
         lookupProductOwnershipByBarcodeUseCase:
             dependencies.lookupProductOwnershipByBarcodeUseCase,
+        developerBrandLookupScreenBuilder: kDebugMode
+            ? (context) => DeveloperBrandLookupScreen(
+                determineOwnershipUseCase:
+                    dependencies.determineOwnershipUseCase,
+              )
+            : null,
       ),
     );
   }

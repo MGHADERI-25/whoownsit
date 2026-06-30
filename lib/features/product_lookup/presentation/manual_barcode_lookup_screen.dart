@@ -1,19 +1,23 @@
 import 'package:flutter/material.dart';
-import '../../scan/presentation/barcode_scanner_screen.dart';
+
 import '../../../app/app_constants.dart';
+import '../../ownership/domain/brand_match_label_formatter.dart';
 import '../../ownership/domain/ownership_result.dart';
 import '../../ownership/domain/ownership_result_status.dart';
+import '../../scan/presentation/barcode_scanner_screen.dart';
 import '../application/lookup_product_ownership_by_barcode_use_case.dart';
-import '../../ownership/domain/brand_match_label_formatter.dart';
 
 class ManualBarcodeLookupScreen extends StatefulWidget {
   const ManualBarcodeLookupScreen({
     required this.lookupProductOwnershipByBarcodeUseCase,
+    this.developerBrandLookupScreenBuilder,
     super.key,
   });
 
   final LookupProductOwnershipByBarcodeUseCase
   lookupProductOwnershipByBarcodeUseCase;
+
+  final WidgetBuilder? developerBrandLookupScreenBuilder;
 
   @override
   State<ManualBarcodeLookupScreen> createState() =>
@@ -138,6 +142,23 @@ class _ManualBarcodeLookupScreenState extends State<ManualBarcodeLookupScreen> {
                           _isLoading ? 'Looking up...' : 'Lookup ownership',
                         ),
                       ),
+                      if (widget.developerBrandLookupScreenBuilder != null) ...[
+                        const SizedBox(height: 12),
+                        TextButton.icon(
+                          onPressed: _isLoading
+                              ? null
+                              : () {
+                                  Navigator.of(context).push(
+                                    MaterialPageRoute(
+                                      builder: widget
+                                          .developerBrandLookupScreenBuilder!,
+                                    ),
+                                  );
+                                },
+                          icon: const Icon(Icons.developer_mode),
+                          label: const Text('Developer brand test'),
+                        ),
+                      ],
                     ],
                   ),
                 ),
