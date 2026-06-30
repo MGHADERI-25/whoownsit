@@ -6,5 +6,37 @@
     "countryCode": "CH",
     "website": "https://www.nestle.com",
     "notes": "Swiss multinational food and beverage company."
+  },
+  {
+    "id": "company_ferrero_group",
+    "name": "Ferrero Group",
+    "aliases": ["Ferrero"],
+    "countryCode": "IT",
+    "website": "https://www.ferrero.com",
+    "notes": "Non-target company. Added for known non-Nestlé ownership classification."
+  },
+  {
+    "id": "company_mars_inc",
+    "name": "Mars, Incorporated",
+    "aliases": ["Mars", "Mars Inc"],
+    "countryCode": "US",
+    "website": "https://www.mars.com",
+    "notes": "Non-target company. Added for known non-Nestlé ownership classification."
+  },
+  {
+    "id": "company_mondelez_international",
+    "name": "Mondelēz International",
+    "aliases": ["Mondelez", "Mondelēz", "Mondelez International"],
+    "countryCode": "US",
+    "website": "https://www.mondelezinternational.com",
+    "notes": "Non-target company. Added for known non-Nestlé ownership classification."
+  },
+  {
+    "id": "company_unilever",
+    "name": "Unilever",
+    "aliases": ["Unilever PLC"],
+    "countryCode": "GB",
+    "website": "https://www.unilever.com",
+    "notes": "Non-target company. Added for known non-Nestlé ownership classification."
   }
 ]
