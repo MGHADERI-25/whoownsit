@@ -40,6 +40,11 @@ Future<void> main() async {
     ['Maggi Malaysia'],
     ['Purina ONE'],
     ['Nutella'],
+    ['Snickers'],
+    ['Twix'],
+    ['M&M\'s'],
+    ['Skittles'],
+    ['Mars Bar'],
     ['Unknown Brand'],
   ];
 
