@@ -29,4 +29,15 @@
     "accessedAt": "2026-06-29",
     "notes": "Official Nestlé dairy brand reference page."
   }
+  ,
+{
+  "id": "source_ferrero_brands_page",
+  "title": "Ferrero brands overview",
+  "url": "https://www.ferrero.com/int/en/our-brands",
+  "publisher": "Ferrero Group",
+  "sourceType": "company_website",
+  "publishedAt": null,
+  "accessedAt": "2026-07-09",
+  "notes": "Official Ferrero brand reference page."
+}
 ]

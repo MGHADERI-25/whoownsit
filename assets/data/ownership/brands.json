@@ -153,4 +153,61 @@
     "markets": [],
     "notes": "Listed by Nestlé under petcare brands."
   }
+  ,
+{
+  "id": "brand_nutella",
+  "name": "Nutella",
+  "aliases": ["NUTELLA"],
+  "normalizedNames": ["nutella"],
+  "ownerCompanyId": "company_ferrero_group",
+  "relationshipType": "owned_by",
+  "verificationStatus": "maintainer_verified",
+  "sourceIds": ["source_ferrero_brands_page"],
+  "effectiveFrom": "1964-01-01",
+  "effectiveTo": null,
+  "markets": [],
+  "notes": "Ferrero brand. Added so Nutella is classified as known non-Nestlé."
+},
+{
+  "id": "brand_kinder",
+  "name": "Kinder",
+  "aliases": ["KINDER"],
+  "normalizedNames": ["kinder"],
+  "ownerCompanyId": "company_ferrero_group",
+  "relationshipType": "owned_by",
+  "verificationStatus": "maintainer_verified",
+  "sourceIds": ["source_ferrero_brands_page"],
+  "effectiveFrom": "1968-01-01",
+  "effectiveTo": null,
+  "markets": [],
+  "notes": "Ferrero brand. Added so Kinder is classified as known non-Nestlé."
+},
+{
+  "id": "brand_ferrero_rocher",
+  "name": "Ferrero Rocher",
+  "aliases": ["FERRERO ROCHER"],
+  "normalizedNames": ["ferrero rocher"],
+  "ownerCompanyId": "company_ferrero_group",
+  "relationshipType": "owned_by",
+  "verificationStatus": "maintainer_verified",
+  "sourceIds": ["source_ferrero_brands_page"],
+  "effectiveFrom": "1982-01-01",
+  "effectiveTo": null,
+  "markets": [],
+  "notes": "Ferrero brand. Added so Ferrero Rocher is classified as known non-Nestlé."
+},
+{
+  "id": "brand_tic_tac",
+  "name": "Tic Tac",
+  "aliases": ["TicTac", "TIC TAC", "TICTAC"],
+  "normalizedNames": ["tic tac", "tictac"],
+  "ownerCompanyId": "company_ferrero_group",
+  "relationshipType": "owned_by",
+  "verificationStatus": "maintainer_verified",
+  "sourceIds": ["source_ferrero_brands_page"],
+  "effectiveFrom": "1969-01-01",
+  "effectiveTo": null,
+  "markets": [],
+  "notes": "Ferrero brand. Added so Tic Tac is classified as known non-Nestlé."
+}
 ]

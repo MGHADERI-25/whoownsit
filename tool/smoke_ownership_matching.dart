@@ -39,6 +39,7 @@ Future<void> main() async {
     ['Nescafé Classic'],
     ['Maggi Malaysia'],
     ['Purina ONE'],
+    ['Nutella'],
     ['Unknown Brand'],
   ];
 
