@@ -210,4 +210,75 @@
   "markets": [],
   "notes": "Ferrero brand. Added so Tic Tac is classified as known non-Nestlé."
 }
+,
+{
+  "id": "brand_snickers",
+  "name": "Snickers",
+  "aliases": ["SNICKERS"],
+  "normalizedNames": ["snickers"],
+  "ownerCompanyId": "company_mars_inc",
+  "relationshipType": "owned_by",
+  "verificationStatus": "maintainer_verified",
+  "sourceIds": ["source_mars_brands_page"],
+  "effectiveFrom": "1930-01-01",
+  "effectiveTo": null,
+  "markets": [],
+  "notes": "Mars brand. Added so Snickers is classified as known non-Nestlé."
+},
+{
+  "id": "brand_mms",
+  "name": "M&M's",
+  "aliases": ["M&Ms", "M and M's", "MMS"],
+  "normalizedNames": ["mms", "m and ms"],
+  "ownerCompanyId": "company_mars_inc",
+  "relationshipType": "owned_by",
+  "verificationStatus": "maintainer_verified",
+  "sourceIds": ["source_mars_brands_page"],
+  "effectiveFrom": "1941-01-01",
+  "effectiveTo": null,
+  "markets": [],
+  "notes": "Mars brand. Added so M&M's is classified as known non-Nestlé."
+},
+{
+  "id": "brand_twix",
+  "name": "Twix",
+  "aliases": ["TWIX"],
+  "normalizedNames": ["twix"],
+  "ownerCompanyId": "company_mars_inc",
+  "relationshipType": "owned_by",
+  "verificationStatus": "maintainer_verified",
+  "sourceIds": ["source_mars_brands_page"],
+  "effectiveFrom": "1967-01-01",
+  "effectiveTo": null,
+  "markets": [],
+  "notes": "Mars brand. Added so Twix is classified as known non-Nestlé."
+},
+{
+  "id": "brand_skittles",
+  "name": "Skittles",
+  "aliases": ["SKITTLES"],
+  "normalizedNames": ["skittles"],
+  "ownerCompanyId": "company_mars_inc",
+  "relationshipType": "owned_by",
+  "verificationStatus": "maintainer_verified",
+  "sourceIds": ["source_mars_brands_page"],
+  "effectiveFrom": "1974-01-01",
+  "effectiveTo": null,
+  "markets": [],
+  "notes": "Mars brand. Added so Skittles is classified as known non-Nestlé."
+},
+{
+  "id": "brand_mars",
+  "name": "Mars",
+  "aliases": ["Mars Bar", "MARS"],
+  "normalizedNames": ["mars", "mars bar"],
+  "ownerCompanyId": "company_mars_inc",
+  "relationshipType": "owned_by",
+  "verificationStatus": "maintainer_verified",
+  "sourceIds": ["source_mars_brands_page"],
+  "effectiveFrom": "1932-01-01",
+  "effectiveTo": null,
+  "markets": [],
+  "notes": "Mars brand. Added so Mars bar is classified as known non-Nestlé."
+}
 ]

@@ -40,4 +40,15 @@
   "accessedAt": "2026-07-09",
   "notes": "Official Ferrero brand reference page."
 }
+,
+{
+  "id": "source_mars_brands_page",
+  "title": "Mars brands overview",
+  "url": "https://www.mars.com/our-brands",
+  "publisher": "Mars, Incorporated",
+  "sourceType": "company_website",
+  "publishedAt": null,
+  "accessedAt": "2026-07-09",
+  "notes": "Official Mars brand reference page."
+}
 ]
