@@ -1,6 +1,7 @@
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:whoownsit/features/ownership/data/ownership_database_loader.dart';
+import 'package:whoownsit/features/ownership/domain/relationship_type.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -34,6 +35,158 @@ void main() {
       }
     });
 
+    test('companies contain required non-empty fields', () async {
+      final loader = OwnershipDatabaseLoader(assetBundle: rootBundle);
+
+      final database = await loader.load();
+
+      for (final company in database.companies) {
+        expect(
+          company.id.trim(),
+          isNotEmpty,
+          reason: 'Company has an empty ID.',
+        );
+        expect(
+          company.name.trim(),
+          isNotEmpty,
+          reason: 'Company ${company.id} has an empty name.',
+        );
+        expect(
+          company.countryCode.trim(),
+          isNotEmpty,
+          reason: 'Company ${company.id} has an empty country code.',
+        );
+        expect(
+          company.website.trim(),
+          isNotEmpty,
+          reason: 'Company ${company.id} has an empty website.',
+        );
+      }
+    });
+
+    test('brands contain required non-empty fields', () async {
+      final loader = OwnershipDatabaseLoader(assetBundle: rootBundle);
+
+      final database = await loader.load();
+
+      for (final brand in database.brands) {
+        expect(brand.id.trim(), isNotEmpty, reason: 'Brand has an empty ID.');
+        expect(
+          brand.name.trim(),
+          isNotEmpty,
+          reason: 'Brand ${brand.id} has an empty name.',
+        );
+        expect(
+          brand.ownerCompanyId.trim(),
+          isNotEmpty,
+          reason: 'Brand ${brand.id} has an empty ownerCompanyId.',
+        );
+        expect(
+          brand.sourceIds,
+          isNotEmpty,
+          reason: 'Brand ${brand.id} has no supporting sources.',
+        );
+        expect(
+          brand.normalizedNames,
+          isNotEmpty,
+          reason: 'Brand ${brand.id} has no normalized names.',
+        );
+      }
+    });
+    test('sources contain required non-empty fields', () async {
+      final loader = OwnershipDatabaseLoader(assetBundle: rootBundle);
+
+      final database = await loader.load();
+
+      for (final source in database.sources) {
+        expect(source.id.trim(), isNotEmpty, reason: 'Source has an empty ID.');
+        expect(
+          source.title.trim(),
+          isNotEmpty,
+          reason: 'Source ${source.id} has an empty title.',
+        );
+        expect(
+          source.url.trim(),
+          isNotEmpty,
+          reason: 'Source ${source.id} has an empty URL.',
+        );
+        expect(
+          source.publisher.trim(),
+          isNotEmpty,
+          reason: 'Source ${source.id} has an empty publisher.',
+        );
+      }
+    });
+
+    test('brand effective date ranges are valid', () async {
+      final loader = OwnershipDatabaseLoader(assetBundle: rootBundle);
+
+      final database = await loader.load();
+
+      for (final brand in database.brands) {
+        final effectiveTo = brand.effectiveTo;
+
+        if (effectiveTo == null) {
+          continue;
+        }
+
+        expect(
+          effectiveTo.isBefore(brand.effectiveFrom),
+          isFalse,
+          reason: 'Brand ${brand.id} has effectiveTo before effectiveFrom.',
+        );
+      }
+    });
+
+    test('current ownership records have consistent relationships', () async {
+      final loader = OwnershipDatabaseLoader(assetBundle: rootBundle);
+
+      final database = await loader.load();
+
+      for (final brand in database.brands) {
+        expect(
+          brand.relationshipType == RelationshipType.unknown,
+          isFalse,
+          reason: 'Brand ${brand.id} uses an unknown relationship type.',
+        );
+
+        if (brand.relationshipType == RelationshipType.notOwnedBy) {
+          expect(
+            brand.ownerCompanyId == 'company_nestle_sa',
+            isTrue,
+            reason:
+                'Brand ${brand.id} uses notOwnedBy but does not reference the target company.',
+          );
+        }
+      }
+    });
+
+    test('brand normalized names are lowercase and trimmed', () async {
+      final loader = OwnershipDatabaseLoader(assetBundle: rootBundle);
+
+      final database = await loader.load();
+
+      for (final brand in database.brands) {
+        for (final normalizedName in brand.normalizedNames) {
+          expect(
+            normalizedName,
+            normalizedName.trim(),
+            reason: 'Brand ${brand.id} contains an untrimmed normalized name.',
+          );
+          expect(
+            normalizedName,
+            normalizedName.toLowerCase(),
+            reason:
+                'Brand ${brand.id} contains a non-lowercase normalized name.',
+          );
+          expect(
+            normalizedName,
+            isNotEmpty,
+            reason: 'Brand ${brand.id} contains an empty normalized name.',
+          );
+        }
+      }
+    });
     test('company IDs are unique', () async {
       final loader = OwnershipDatabaseLoader(assetBundle: rootBundle);
 
