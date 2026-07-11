@@ -82,5 +82,25 @@
   "publishedAt": null,
   "accessedAt": "2026-07-11",
   "notes": "Official Unilever Foods portfolio identifying Knorr and Hellmann's as global Power Brands."
+},
+{
+  "id": "source_nestle_water_page",
+  "title": "Nestlé water brands",
+  "url": "https://www.nestle.com/brands/water",
+  "publisher": "Nestlé",
+  "sourceType": "company_website",
+  "publishedAt": null,
+  "accessedAt": "2026-07-11",
+  "notes": "Official Nestlé water brand portfolio."
+},
+{
+  "id": "source_nestle_nutrition_health_page",
+  "title": "Nestlé nutrition and health brands",
+  "url": "https://www.nestle.com/brands/nutrition-health",
+  "publisher": "Nestlé",
+  "sourceType": "company_website",
+  "publishedAt": null,
+  "accessedAt": "2026-07-11",
+  "notes": "Official Nestlé nutrition and health brand portfolio."
 }
 ]

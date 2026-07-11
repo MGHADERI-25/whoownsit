@@ -420,5 +420,160 @@
   "effectiveTo": null,
   "markets": [],
   "notes": "Current Unilever ownership verified from the official global brand portfolio. Market availability varies."
+},
+{
+  "id": "brand_s_pellegrino",
+  "name": "S.Pellegrino",
+  "aliases": [
+    "S Pellegrino",
+    "San Pellegrino",
+    "SANPELLEGRINO",
+    "S.PELLEGRINO"
+  ],
+  "normalizedNames": [
+    "s pellegrino",
+    "san pellegrino",
+    "sanpellegrino"
+  ],
+  "ownerCompanyId": "company_nestle_sa",
+  "relationshipType": "owned_by",
+  "verificationStatus": "maintainer_verified",
+  "sourceIds": ["source_nestle_water_page"],
+  "effectiveFrom": "2026-07-11",
+  "effectiveTo": null,
+  "markets": [],
+  "notes": "Current Nestlé ownership verified from the official water portfolio. Effective date records verification, not original acquisition."
+},
+{
+  "id": "brand_perrier",
+  "name": "Perrier",
+  "aliases": ["PERRIER", "Perrier Water"],
+  "normalizedNames": ["perrier", "perrier water"],
+  "ownerCompanyId": "company_nestle_sa",
+  "relationshipType": "owned_by",
+  "verificationStatus": "maintainer_verified",
+  "sourceIds": ["source_nestle_water_page"],
+  "effectiveFrom": "2026-07-11",
+  "effectiveTo": null,
+  "markets": [],
+  "notes": "Current Nestlé ownership verified from the official water portfolio. Effective date records verification, not original acquisition."
+},
+{
+  "id": "brand_acqua_panna",
+  "name": "Acqua Panna",
+  "aliases": ["ACQUA PANNA", "Acqua Panna Toscana"],
+  "normalizedNames": ["acqua panna", "acqua panna toscana"],
+  "ownerCompanyId": "company_nestle_sa",
+  "relationshipType": "owned_by",
+  "verificationStatus": "maintainer_verified",
+  "sourceIds": ["source_nestle_water_page"],
+  "effectiveFrom": "2026-07-11",
+  "effectiveTo": null,
+  "markets": [],
+  "notes": "Current Nestlé ownership verified from the official water portfolio. Effective date records verification, not original acquisition."
+},
+{
+  "id": "brand_vittel",
+  "name": "Vittel",
+  "aliases": ["VITTEL", "Vittel Water"],
+  "normalizedNames": ["vittel", "vittel water"],
+  "ownerCompanyId": "company_nestle_sa",
+  "relationshipType": "owned_by",
+  "verificationStatus": "maintainer_verified",
+  "sourceIds": ["source_nestle_water_page"],
+  "effectiveFrom": "2026-07-11",
+  "effectiveTo": null,
+  "markets": [],
+  "notes": "Current Nestlé ownership verified from the official water portfolio. Market availability varies."
+},
+{
+  "id": "brand_buxton",
+  "name": "Buxton",
+  "aliases": [
+    "BUXTON",
+    "Buxton Natural Mineral Water",
+    "Buxton Water"
+  ],
+  "normalizedNames": [
+    "buxton",
+    "buxton natural mineral water",
+    "buxton water"
+  ],
+  "ownerCompanyId": "company_nestle_sa",
+  "relationshipType": "owned_by",
+  "verificationStatus": "maintainer_verified",
+  "sourceIds": ["source_nestle_water_page"],
+  "effectiveFrom": "2026-07-11",
+  "effectiveTo": null,
+  "markets": [],
+  "notes": "Current Nestlé ownership verified from the official water portfolio. Primarily associated with the United Kingdom market."
+},
+{
+  "id": "brand_nestle_pure_life",
+  "name": "Nestlé Pure Life",
+  "aliases": [
+    "Nestle Pure Life",
+    "NESTLÉ PURE LIFE",
+    "NESTLE PURE LIFE",
+    "Pure Life"
+  ],
+  "normalizedNames": [
+    "nestlé pure life",
+    "nestle pure life",
+    "pure life"
+  ],
+  "ownerCompanyId": "company_nestle_sa",
+  "relationshipType": "owned_by",
+  "verificationStatus": "maintainer_verified",
+  "sourceIds": ["source_nestle_water_page"],
+  "effectiveFrom": "2026-07-11",
+  "effectiveTo": null,
+  "markets": [],
+  "notes": "Current Nestlé ownership verified from the official water portfolio. Available in multiple markets."
+},
+{
+  "id": "brand_bear_brand",
+  "name": "Bear Brand",
+  "aliases": [
+    "BEAR BRAND",
+    "BearBrand",
+    "Nestlé Bear Brand",
+    "Nestle Bear Brand"
+  ],
+  "normalizedNames": [
+    "bear brand",
+    "bearbrand",
+    "nestlé bear brand",
+    "nestle bear brand"
+  ],
+  "ownerCompanyId": "company_nestle_sa",
+  "relationshipType": "owned_by",
+  "verificationStatus": "maintainer_verified",
+  "sourceIds": [
+    "source_nestle_dairy_page",
+    "source_nestle_nutrition_health_page"
+  ],
+  "effectiveFrom": "2026-07-11",
+  "effectiveTo": null,
+  "markets": [],
+  "notes": "Current Nestlé ownership verified from official dairy and nutrition portfolio pages. Market availability varies."
+},
+{
+  "id": "brand_nescau",
+  "name": "Nescau",
+  "aliases": ["NESCAU", "Nestlé Nescau", "Nestle Nescau"],
+  "normalizedNames": [
+    "nescau",
+    "nestlé nescau",
+    "nestle nescau"
+  ],
+  "ownerCompanyId": "company_nestle_sa",
+  "relationshipType": "owned_by",
+  "verificationStatus": "maintainer_verified",
+  "sourceIds": ["source_nestle_dairy_page"],
+  "effectiveFrom": "2026-07-11",
+  "effectiveTo": null,
+  "markets": [],
+  "notes": "Current Nestlé ownership verified from the official dairy portfolio. Particularly relevant in Latin American markets."
 }
 ]
