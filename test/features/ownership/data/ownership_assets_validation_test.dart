@@ -5,15 +5,14 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:whoownsit/features/ownership/data/ownership_database_loader.dart';
 import 'package:whoownsit/features/ownership/domain/brand_name_normalizer.dart';
 import 'package:whoownsit/features/ownership/domain/relationship_type.dart';
+import 'package:whoownsit/features/ownership/data/ownership_database.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
   group('ownership asset validation', () {
     test('bundled ownership assets load successfully', () async {
-      final loader = OwnershipDatabaseLoader(assetBundle: rootBundle);
-
-      final database = await loader.load();
+      final database = await _loadDatabase();
 
       expect(database.companies, isNotEmpty);
       expect(database.brands, isNotEmpty);
@@ -21,9 +20,7 @@ void main() {
     });
 
     test('all brand ownerCompanyIds reference existing companies', () async {
-      final loader = OwnershipDatabaseLoader(assetBundle: rootBundle);
-
-      final database = await loader.load();
+      final database = await _loadDatabase();
       final companyIds = database.companies
           .map((company) => company.id)
           .toSet();
@@ -40,9 +37,7 @@ void main() {
     });
 
     test('companies contain required non-empty fields', () async {
-      final loader = OwnershipDatabaseLoader(assetBundle: rootBundle);
-
-      final database = await loader.load();
+      final database = await _loadDatabase();
 
       for (final company in database.companies) {
         expect(
@@ -69,9 +64,7 @@ void main() {
     });
 
     test('brands contain required non-empty fields', () async {
-      final loader = OwnershipDatabaseLoader(assetBundle: rootBundle);
-
-      final database = await loader.load();
+      final database = await _loadDatabase();
 
       for (final brand in database.brands) {
         expect(brand.id.trim(), isNotEmpty, reason: 'Brand has an empty ID.');
@@ -99,9 +92,7 @@ void main() {
     });
 
     test('sources contain required non-empty fields', () async {
-      final loader = OwnershipDatabaseLoader(assetBundle: rootBundle);
-
-      final database = await loader.load();
+      final database = await _loadDatabase();
 
       for (final source in database.sources) {
         expect(source.id.trim(), isNotEmpty, reason: 'Source has an empty ID.');
@@ -124,9 +115,7 @@ void main() {
     });
 
     test('brand effective date ranges are valid', () async {
-      final loader = OwnershipDatabaseLoader(assetBundle: rootBundle);
-
-      final database = await loader.load();
+      final database = await _loadDatabase();
 
       for (final brand in database.brands) {
         final effectiveTo = brand.effectiveTo;
@@ -144,9 +133,7 @@ void main() {
     });
 
     test('current ownership records have consistent relationships', () async {
-      final loader = OwnershipDatabaseLoader(assetBundle: rootBundle);
-
-      final database = await loader.load();
+      final database = await _loadDatabase();
 
       for (final brand in database.brands) {
         expect(
@@ -168,9 +155,7 @@ void main() {
     });
 
     test('brand normalized names are lowercase and trimmed', () async {
-      final loader = OwnershipDatabaseLoader(assetBundle: rootBundle);
-
-      final database = await loader.load();
+      final database = await _loadDatabase();
 
       for (final brand in database.brands) {
         for (final normalizedName in brand.normalizedNames) {
@@ -196,9 +181,7 @@ void main() {
     });
 
     test('company IDs are unique', () async {
-      final loader = OwnershipDatabaseLoader(assetBundle: rootBundle);
-
-      final database = await loader.load();
+      final database = await _loadDatabase();
       final ids = database.companies.map((company) => company.id).toList();
 
       expect(
@@ -209,9 +192,7 @@ void main() {
     });
 
     test('brand IDs are unique', () async {
-      final loader = OwnershipDatabaseLoader(assetBundle: rootBundle);
-
-      final database = await loader.load();
+      final database = await _loadDatabase();
       final ids = database.brands.map((brand) => brand.id).toList();
 
       expect(
@@ -222,9 +203,7 @@ void main() {
     });
 
     test('source IDs are unique', () async {
-      final loader = OwnershipDatabaseLoader(assetBundle: rootBundle);
-
-      final database = await loader.load();
+      final database = await _loadDatabase();
       final ids = database.sources.map((source) => source.id).toList();
 
       expect(
@@ -235,9 +214,7 @@ void main() {
     });
 
     test('brand normalized names are not shared by different brands', () async {
-      final loader = OwnershipDatabaseLoader(assetBundle: rootBundle);
-
-      final database = await loader.load();
+      final database = await _loadDatabase();
       final ownersByNormalizedName = <String, String>{};
 
       for (final brand in database.brands) {
@@ -264,9 +241,7 @@ void main() {
     });
 
     test('company country codes use two-letter uppercase format', () async {
-      final loader = OwnershipDatabaseLoader(assetBundle: rootBundle);
-
-      final database = await loader.load();
+      final database = await _loadDatabase();
       final countryCodePattern = RegExp(r'^[A-Z]{2}$');
 
       for (final company in database.companies) {
@@ -281,9 +256,7 @@ void main() {
     });
 
     test('company websites contain valid HTTP or HTTPS URLs', () async {
-      final loader = OwnershipDatabaseLoader(assetBundle: rootBundle);
-
-      final database = await loader.load();
+      final database = await _loadDatabase();
 
       for (final company in database.companies) {
         final uri = Uri.tryParse(company.website);
@@ -302,9 +275,7 @@ void main() {
     });
 
     test('source URLs contain valid HTTP or HTTPS URLs', () async {
-      final loader = OwnershipDatabaseLoader(assetBundle: rootBundle);
-
-      final database = await loader.load();
+      final database = await _loadDatabase();
 
       for (final source in database.sources) {
         final uri = Uri.tryParse(source.url);
@@ -321,21 +292,10 @@ void main() {
     });
 
     test('source dates contain valid ISO-8601 date strings', () async {
-      final jsonString = await rootBundle.loadString(
+      final sources = await _loadJsonArray(
         'assets/data/ownership/sources.json',
       );
-
-      final decoded = jsonDecode(jsonString);
-
-      expect(
-        decoded,
-        isA<List<dynamic>>(),
-        reason: 'sources.json must contain a JSON array.',
-      );
-
-      final sources = decoded as List<dynamic>;
       final datePattern = RegExp(r'^\d{4}-\d{2}-\d{2}$');
-
       for (final entry in sources) {
         expect(
           entry,
@@ -415,9 +375,7 @@ void main() {
     });
 
     test('all brand sourceIds reference existing sources', () async {
-      final loader = OwnershipDatabaseLoader(assetBundle: rootBundle);
-
-      final database = await loader.load();
+      final database = await _loadDatabase();
       final sourceIds = database.sources.map((source) => source.id).toSet();
 
       for (final brand in database.brands) {
@@ -432,19 +390,7 @@ void main() {
     });
 
     test('brand effective dates use valid ISO-8601 date strings', () async {
-      final jsonString = await rootBundle.loadString(
-        'assets/data/ownership/brands.json',
-      );
-
-      final decoded = jsonDecode(jsonString);
-
-      expect(
-        decoded,
-        isA<List<dynamic>>(),
-        reason: 'brands.json must contain a JSON array.',
-      );
-
-      final brands = decoded as List<dynamic>;
+      final brands = await _loadJsonArray('assets/data/ownership/brands.json');
       final datePattern = RegExp(r'^\d{4}-\d{2}-\d{2}$');
 
       for (final entry in brands) {
@@ -526,19 +472,7 @@ void main() {
     });
 
     test('brand market codes use unique uppercase two-letter values', () async {
-      final jsonString = await rootBundle.loadString(
-        'assets/data/ownership/brands.json',
-      );
-
-      final decoded = jsonDecode(jsonString);
-
-      expect(
-        decoded,
-        isA<List<dynamic>>(),
-        reason: 'brands.json must contain a JSON array.',
-      );
-
-      final brands = decoded as List<dynamic>;
+      final brands = await _loadJsonArray('assets/data/ownership/brands.json');
       final marketCodePattern = RegExp(r'^[A-Z]{2}$');
 
       for (final entry in brands) {
@@ -584,9 +518,7 @@ void main() {
     });
     test('brand aliases normalize to non-empty values', () async {
       const normalizer = BrandNameNormalizer();
-      final loader = OwnershipDatabaseLoader(assetBundle: rootBundle);
-
-      final database = await loader.load();
+      final database = await _loadDatabase();
 
       for (final brand in database.brands) {
         for (final alias in brand.aliases) {
@@ -609,9 +541,7 @@ void main() {
       'stored normalized names use the production normalizer format',
       () async {
         const normalizer = BrandNameNormalizer();
-        final loader = OwnershipDatabaseLoader(assetBundle: rootBundle);
-
-        final database = await loader.load();
+        final database = await _loadDatabase();
 
         for (final brand in database.brands) {
           for (final normalizedName in brand.normalizedNames) {
@@ -629,9 +559,7 @@ void main() {
 
     test('brand normalized names are unique within each record', () async {
       const normalizer = BrandNameNormalizer();
-      final loader = OwnershipDatabaseLoader(assetBundle: rootBundle);
-
-      final database = await loader.load();
+      final database = await _loadDatabase();
 
       for (final brand in database.brands) {
         final normalizedNames = brand.normalizedNames
@@ -649,9 +577,7 @@ void main() {
 
     test('every brand has usable canonical-name coverage', () async {
       const normalizer = BrandNameNormalizer();
-      final loader = OwnershipDatabaseLoader(assetBundle: rootBundle);
-
-      final database = await loader.load();
+      final database = await _loadDatabase();
 
       for (final brand in database.brands) {
         final normalizedCanonicalName = normalizer.normalize(brand.name);
@@ -701,4 +627,22 @@ DateTime? _parseStrictDate(String value) {
       '${parsed.day.toString().padLeft(2, '0')}';
 
   return expected == value ? parsed : null;
+}
+
+Future<OwnershipDatabase> _loadDatabase() {
+  return OwnershipDatabaseLoader(assetBundle: rootBundle).load();
+}
+
+Future<List<dynamic>> _loadJsonArray(String assetPath) async {
+  final jsonString = await rootBundle.loadString(assetPath);
+
+  final decoded = jsonDecode(jsonString);
+
+  expect(
+    decoded,
+    isA<List<dynamic>>(),
+    reason: '$assetPath must contain a JSON array.',
+  );
+
+  return decoded as List<dynamic>;
 }
