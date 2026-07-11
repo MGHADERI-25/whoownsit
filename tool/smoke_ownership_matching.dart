@@ -52,6 +52,9 @@ Future<void> main() async {
     ['Toblerone'],
     ['Ritz Crackers'],
     ['belVita'],
+    ['Knorr'],
+    ['Hellmann\'s Real Mayonnaise'],
+    ['Horlicks'],
   ];
 
   for (final brandNames in testCases) {
