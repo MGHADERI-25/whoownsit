@@ -46,6 +46,12 @@ Future<void> main() async {
     ['Skittles'],
     ['Mars Bar'],
     ['Unknown Brand'],
+    ['Oreo'],
+    ['Cadbury Dairy Milk'],
+    ['Milka'],
+    ['Toblerone'],
+    ['Ritz Crackers'],
+    ['belVita'],
   ];
 
   for (final brandNames in testCases) {
