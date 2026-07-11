@@ -429,5 +429,172 @@ void main() {
         }
       }
     });
+
+    test('brand effective dates use valid ISO-8601 date strings', () async {
+      final jsonString = await rootBundle.loadString(
+        'assets/data/ownership/brands.json',
+      );
+
+      final decoded = jsonDecode(jsonString);
+
+      expect(
+        decoded,
+        isA<List<dynamic>>(),
+        reason: 'brands.json must contain a JSON array.',
+      );
+
+      final brands = decoded as List<dynamic>;
+      final datePattern = RegExp(r'^\d{4}-\d{2}-\d{2}$');
+
+      for (final entry in brands) {
+        expect(
+          entry,
+          isA<Map<String, dynamic>>(),
+          reason: 'Every brands.json entry must be an object.',
+        );
+
+        final brand = entry as Map<String, dynamic>;
+        final brandId = brand['id'];
+        final effectiveFrom = brand['effectiveFrom'];
+        final effectiveTo = brand['effectiveTo'];
+
+        expect(
+          effectiveFrom,
+          isA<String>(),
+          reason: 'Brand $brandId must have an effectiveFrom date.',
+        );
+
+        final effectiveFromValue = effectiveFrom as String;
+
+        expect(
+          datePattern.hasMatch(effectiveFromValue),
+          isTrue,
+          reason:
+              'Brand $brandId has invalid effectiveFrom format '
+              '"$effectiveFromValue".',
+        );
+
+        final parsedEffectiveFrom = _parseStrictDate(effectiveFromValue);
+
+        expect(
+          parsedEffectiveFrom,
+          isNotNull,
+          reason:
+              'Brand $brandId has an invalid effectiveFrom date '
+              '"$effectiveFromValue".',
+        );
+
+        if (effectiveTo != null) {
+          expect(
+            effectiveTo,
+            isA<String>(),
+            reason: 'Brand $brandId effectiveTo must be a string or null.',
+          );
+
+          final effectiveToValue = effectiveTo as String;
+
+          expect(
+            datePattern.hasMatch(effectiveToValue),
+            isTrue,
+            reason:
+                'Brand $brandId has invalid effectiveTo format '
+                '"$effectiveToValue".',
+          );
+
+          final parsedEffectiveTo = _parseStrictDate(effectiveToValue);
+
+          expect(
+            parsedEffectiveTo,
+            isNotNull,
+            reason:
+                'Brand $brandId has an invalid effectiveTo date '
+                '"$effectiveToValue".',
+          );
+
+          if (parsedEffectiveFrom != null && parsedEffectiveTo != null) {
+            expect(
+              parsedEffectiveTo.isBefore(parsedEffectiveFrom),
+              isFalse,
+              reason:
+                  'Brand $brandId has effectiveTo earlier than '
+                  'effectiveFrom.',
+            );
+          }
+        }
+      }
+    });
+
+    test('brand market codes use unique uppercase two-letter values', () async {
+      final jsonString = await rootBundle.loadString(
+        'assets/data/ownership/brands.json',
+      );
+
+      final decoded = jsonDecode(jsonString);
+
+      expect(
+        decoded,
+        isA<List<dynamic>>(),
+        reason: 'brands.json must contain a JSON array.',
+      );
+
+      final brands = decoded as List<dynamic>;
+      final marketCodePattern = RegExp(r'^[A-Z]{2}$');
+
+      for (final entry in brands) {
+        final brand = entry as Map<String, dynamic>;
+        final brandId = brand['id'];
+        final markets = brand['markets'];
+
+        expect(
+          markets,
+          isA<List<dynamic>>(),
+          reason: 'Brand $brandId must contain a markets array.',
+        );
+
+        final marketValues = markets as List<dynamic>;
+        final seenMarketCodes = <String>{};
+
+        for (final market in marketValues) {
+          expect(
+            market,
+            isA<String>(),
+            reason: 'Brand $brandId contains a non-string market code.',
+          );
+
+          final marketCode = market as String;
+
+          expect(
+            marketCodePattern.hasMatch(marketCode),
+            isTrue,
+            reason:
+                'Brand $brandId has invalid market code '
+                '"$marketCode". Expected two uppercase letters.',
+          );
+
+          expect(
+            seenMarketCodes.add(marketCode),
+            isTrue,
+            reason:
+                'Brand $brandId contains duplicate market code '
+                '"$marketCode".',
+          );
+        }
+      }
+    });
   });
+}
+
+DateTime? _parseStrictDate(String value) {
+  final parsed = DateTime.tryParse(value);
+
+  if (parsed == null) {
+    return null;
+  }
+
+  final expected =
+      '${parsed.year.toString().padLeft(4, '0')}-'
+      '${parsed.month.toString().padLeft(2, '0')}-'
+      '${parsed.day.toString().padLeft(2, '0')}';
+
+  return expected == value ? parsed : null;
 }
