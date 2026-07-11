@@ -51,4 +51,15 @@
   "accessedAt": "2026-07-09",
   "notes": "Official Mars brand reference page."
 }
+,
+{
+  "id": "source_mondelez_brands_page",
+  "title": "Mondelēz International brands overview",
+  "url": "https://www.mondelezinternational.com/our-brands/",
+  "publisher": "Mondelēz International",
+  "sourceType": "company_website",
+  "publishedAt": null,
+  "accessedAt": "2026-07-11",
+  "notes": "Official Mondelēz International brand portfolio."
+}
 ]
