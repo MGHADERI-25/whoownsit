@@ -364,5 +364,61 @@
   "effectiveTo": null,
   "markets": [],
   "notes": "Mondelēz brand. Added so belVita is classified as known non-Nestlé."
+},
+{
+  "id": "brand_knorr",
+  "name": "Knorr",
+  "aliases": ["KNORR", "Knorr Professional"],
+  "normalizedNames": ["knorr", "knorr professional"],
+  "ownerCompanyId": "company_unilever",
+  "relationshipType": "owned_by",
+  "verificationStatus": "maintainer_verified",
+  "sourceIds": [
+    "source_unilever_brands_page",
+    "source_unilever_foods_page"
+  ],
+  "effectiveFrom": "2026-07-11",
+  "effectiveTo": null,
+  "markets": [],
+  "notes": "Current Unilever ownership verified from official sources. Historical acquisition dates are not yet modeled."
+},
+{
+  "id": "brand_hellmanns",
+  "name": "Hellmann's",
+  "aliases": [
+    "Hellmanns",
+    "HELLMANN'S",
+    "HELLMANNS",
+    "Hellmann's Real Mayonnaise"
+  ],
+  "normalizedNames": [
+    "hellmanns",
+    "hellmanns real mayonnaise"
+  ],
+  "ownerCompanyId": "company_unilever",
+  "relationshipType": "owned_by",
+  "verificationStatus": "maintainer_verified",
+  "sourceIds": [
+    "source_unilever_brands_page",
+    "source_unilever_foods_page"
+  ],
+  "effectiveFrom": "2026-07-11",
+  "effectiveTo": null,
+  "markets": [],
+  "notes": "Current Unilever ownership verified from official sources. Regional naming may vary."
+},
+{
+  "id": "brand_horlicks",
+  "name": "Horlicks",
+  "aliases": ["HORLICKS"],
+  "normalizedNames": ["horlicks"],
+  "ownerCompanyId": "company_unilever",
+  "relationshipType": "owned_by",
+  "verificationStatus": "maintainer_verified",
+  "sourceIds": ["source_unilever_brands_page"],
+  "effectiveFrom": "2026-07-11",
+  "effectiveTo": null,
+  "markets": [],
+  "notes": "Current Unilever ownership verified from the official global brand portfolio. Market availability varies."
 }
 ]
