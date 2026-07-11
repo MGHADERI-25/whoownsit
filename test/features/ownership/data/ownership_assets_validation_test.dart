@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:whoownsit/features/ownership/data/ownership_database_loader.dart';
@@ -30,7 +32,8 @@ void main() {
           companyIds.contains(brand.ownerCompanyId),
           isTrue,
           reason:
-              'Brand ${brand.id} references missing company ${brand.ownerCompanyId}',
+              'Brand ${brand.id} references missing company '
+              '${brand.ownerCompanyId}.',
         );
       }
     });
@@ -93,6 +96,7 @@ void main() {
         );
       }
     });
+
     test('sources contain required non-empty fields', () async {
       final loader = OwnershipDatabaseLoader(assetBundle: rootBundle);
 
@@ -155,7 +159,8 @@ void main() {
             brand.ownerCompanyId == 'company_nestle_sa',
             isTrue,
             reason:
-                'Brand ${brand.id} uses notOwnedBy but does not reference the target company.',
+                'Brand ${brand.id} uses notOwnedBy but does not '
+                'reference the target company.',
           );
         }
       }
@@ -177,7 +182,8 @@ void main() {
             normalizedName,
             normalizedName.toLowerCase(),
             reason:
-                'Brand ${brand.id} contains a non-lowercase normalized name.',
+                'Brand ${brand.id} contains a non-lowercase '
+                'normalized name.',
           );
           expect(
             normalizedName,
@@ -187,6 +193,7 @@ void main() {
         }
       }
     });
+
     test('company IDs are unique', () async {
       final loader = OwnershipDatabaseLoader(assetBundle: rootBundle);
 
@@ -246,10 +253,162 @@ void main() {
             existingBrandId == null || existingBrandId == brand.id,
             isTrue,
             reason:
-                'Normalized name "$name" is shared by $existingBrandId and ${brand.id}.',
+                'Normalized name "$name" is shared by '
+                '$existingBrandId and ${brand.id}.',
           );
 
           ownersByNormalizedName[name] = brand.id;
+        }
+      }
+    });
+
+    test('company country codes use two-letter uppercase format', () async {
+      final loader = OwnershipDatabaseLoader(assetBundle: rootBundle);
+
+      final database = await loader.load();
+      final countryCodePattern = RegExp(r'^[A-Z]{2}$');
+
+      for (final company in database.companies) {
+        expect(
+          countryCodePattern.hasMatch(company.countryCode),
+          isTrue,
+          reason:
+              'Company ${company.id} has invalid country code '
+              '"${company.countryCode}".',
+        );
+      }
+    });
+
+    test('company websites contain valid HTTP or HTTPS URLs', () async {
+      final loader = OwnershipDatabaseLoader(assetBundle: rootBundle);
+
+      final database = await loader.load();
+
+      for (final company in database.companies) {
+        final uri = Uri.tryParse(company.website);
+
+        expect(
+          uri != null &&
+              uri.hasScheme &&
+              uri.host.isNotEmpty &&
+              (uri.scheme == 'http' || uri.scheme == 'https'),
+          isTrue,
+          reason:
+              'Company ${company.id} has invalid website '
+              '"${company.website}".',
+        );
+      }
+    });
+
+    test('source URLs contain valid HTTP or HTTPS URLs', () async {
+      final loader = OwnershipDatabaseLoader(assetBundle: rootBundle);
+
+      final database = await loader.load();
+
+      for (final source in database.sources) {
+        final uri = Uri.tryParse(source.url);
+
+        expect(
+          uri != null &&
+              uri.hasScheme &&
+              uri.host.isNotEmpty &&
+              (uri.scheme == 'http' || uri.scheme == 'https'),
+          isTrue,
+          reason: 'Source ${source.id} has invalid URL "${source.url}".',
+        );
+      }
+    });
+
+    test('source dates contain valid ISO-8601 date strings', () async {
+      final jsonString = await rootBundle.loadString(
+        'assets/data/ownership/sources.json',
+      );
+
+      final decoded = jsonDecode(jsonString);
+
+      expect(
+        decoded,
+        isA<List<dynamic>>(),
+        reason: 'sources.json must contain a JSON array.',
+      );
+
+      final sources = decoded as List<dynamic>;
+      final datePattern = RegExp(r'^\d{4}-\d{2}-\d{2}$');
+
+      for (final entry in sources) {
+        expect(
+          entry,
+          isA<Map<String, dynamic>>(),
+          reason: 'Every sources.json entry must be an object.',
+        );
+
+        final source = entry as Map<String, dynamic>;
+        final sourceId = source['id'];
+        final accessedAt = source['accessedAt'];
+        final publishedAt = source['publishedAt'];
+
+        expect(
+          accessedAt,
+          isA<String>(),
+          reason: 'Source $sourceId must have an accessedAt date.',
+        );
+
+        final accessedAtValue = accessedAt as String;
+
+        expect(
+          datePattern.hasMatch(accessedAtValue),
+          isTrue,
+          reason:
+              'Source $sourceId has invalid accessedAt format '
+              '"$accessedAtValue".',
+        );
+
+        final parsedAccessedAt = DateTime.tryParse(accessedAtValue);
+
+        expect(
+          parsedAccessedAt,
+          isNotNull,
+          reason:
+              'Source $sourceId has an invalid accessedAt date '
+              '"$accessedAtValue".',
+        );
+
+        if (publishedAt != null) {
+          expect(
+            publishedAt,
+            isA<String>(),
+            reason: 'Source $sourceId publishedAt must be a string or null.',
+          );
+
+          final publishedAtValue = publishedAt as String;
+
+          expect(
+            datePattern.hasMatch(publishedAtValue),
+            isTrue,
+            reason:
+                'Source $sourceId has invalid publishedAt format '
+                '"$publishedAtValue".',
+          );
+
+          final parsedPublishedAt = DateTime.tryParse(publishedAtValue);
+
+          expect(
+            parsedPublishedAt,
+            isNotNull,
+            reason:
+                'Source $sourceId has an invalid publishedAt date '
+                '"$publishedAtValue".',
+          );
+
+          if (parsedPublishedAt != null && parsedAccessedAt != null) {
+            expect(
+              parsedPublishedAt.isAfter(parsedAccessedAt),
+              isFalse,
+              reason:
+                  'Source $sourceId has publishedAt later than '
+                  'accessedAt.',
+            );
+          }
         }
       }
     });
@@ -265,7 +424,7 @@ void main() {
           expect(
             sourceIds.contains(sourceId),
             isTrue,
-            reason: 'Brand ${brand.id} references missing source $sourceId',
+            reason: 'Brand ${brand.id} references missing source $sourceId.',
           );
         }
       }
