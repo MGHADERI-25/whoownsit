@@ -55,6 +55,15 @@ Future<void> main() async {
     ['Knorr'],
     ['Hellmann\'s Real Mayonnaise'],
     ['Horlicks'],
+    ['S.Pellegrino'],
+    ['San Pellegrino'],
+    ['Perrier'],
+    ['Acqua Panna'],
+    ['Vittel'],
+    ['Buxton'],
+    ['Nestlé Pure Life'],
+    ['Bear Brand'],
+    ['Nescau'],
   ];
 
   for (final brandNames in testCases) {
