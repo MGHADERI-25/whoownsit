@@ -1,7 +1,17 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:whoownsit/features/ownership/domain/brand_name_normalizer.dart';
-import 'helpers/ownership_asset_test_helpers.dart';
 import 'package:whoownsit/features/ownership/domain/relationship_type.dart';
+
+import 'helpers/ownership_asset_test_helpers.dart';
+
+Set<String> _findDuplicateIds(Iterable<String> ids) {
+  final seenIds = <String>{};
+
+  return {
+    for (final id in ids)
+      if (!seenIds.add(id)) id,
+  };
+}
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -70,14 +80,9 @@ void main() {
 
     test('company IDs are unique', () async {
       final database = await loadOwnershipDatabase();
-      final seenIds = <String>{};
-      final duplicateIds = <String>{};
-
-      for (final company in database.companies) {
-        if (!seenIds.add(company.id)) {
-          duplicateIds.add(company.id);
-        }
-      }
+      final duplicateIds = _findDuplicateIds(
+        database.companies.map((company) => company.id),
+      );
 
       expect(
         duplicateIds,
@@ -90,14 +95,9 @@ void main() {
 
     test('brand IDs are unique', () async {
       final database = await loadOwnershipDatabase();
-      final seenIds = <String>{};
-      final duplicateIds = <String>{};
-
-      for (final brand in database.brands) {
-        if (!seenIds.add(brand.id)) {
-          duplicateIds.add(brand.id);
-        }
-      }
+      final duplicateIds = _findDuplicateIds(
+        database.brands.map((brand) => brand.id),
+      );
 
       expect(
         duplicateIds,
@@ -110,14 +110,9 @@ void main() {
 
     test('source IDs are unique', () async {
       final database = await loadOwnershipDatabase();
-      final seenIds = <String>{};
-      final duplicateIds = <String>{};
-
-      for (final source in database.sources) {
-        if (!seenIds.add(source.id)) {
-          duplicateIds.add(source.id);
-        }
-      }
+      final duplicateIds = _findDuplicateIds(
+        database.sources.map((source) => source.id),
+      );
 
       expect(
         duplicateIds,

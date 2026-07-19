@@ -1,6 +1,11 @@
 import 'package:flutter_test/flutter_test.dart';
-
 import 'helpers/ownership_asset_test_helpers.dart';
+
+const _brandsAssetPath = 'assets/data/ownership/brands.json';
+const _sourcesAssetPath = 'assets/data/ownership/sources.json';
+
+final _isoDatePattern = RegExp(r'^\d{4}-\d{2}-\d{2}$');
+final _uppercaseTwoLetterCodePattern = RegExp(r'^[A-Z]{2}$');
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -85,11 +90,10 @@ void main() {
 
     test('company country codes use two-letter uppercase format', () async {
       final database = await loadOwnershipDatabase();
-      final countryCodePattern = RegExp(r'^[A-Z]{2}$');
 
       for (final company in database.companies) {
         expect(
-          countryCodePattern.hasMatch(company.countryCode),
+          _uppercaseTwoLetterCodePattern.hasMatch(company.countryCode),
           isTrue,
           reason:
               'Company ${company.id} has invalid country code '
@@ -135,11 +139,7 @@ void main() {
     });
 
     test('source dates contain valid ISO-8601 date strings', () async {
-      final sources = await loadOwnershipJsonArray(
-        'assets/data/ownership/sources.json',
-      );
-
-      final datePattern = RegExp(r'^\d{4}-\d{2}-\d{2}$');
+      final sources = await loadOwnershipJsonArray(_sourcesAssetPath);
 
       for (final entry in sources) {
         expect(
@@ -162,7 +162,7 @@ void main() {
         final accessedAtValue = accessedAt as String;
 
         expect(
-          datePattern.hasMatch(accessedAtValue),
+          _isoDatePattern.hasMatch(accessedAtValue),
           isTrue,
           reason:
               'Source $sourceId has invalid accessedAt format '
@@ -189,7 +189,7 @@ void main() {
           final publishedAtValue = publishedAt as String;
 
           expect(
-            datePattern.hasMatch(publishedAtValue),
+            _isoDatePattern.hasMatch(publishedAtValue),
             isTrue,
             reason:
                 'Source $sourceId has invalid publishedAt format '
@@ -218,11 +218,7 @@ void main() {
     });
 
     test('brand effective dates use valid ISO-8601 date strings', () async {
-      final brands = await loadOwnershipJsonArray(
-        'assets/data/ownership/brands.json',
-      );
-
-      final datePattern = RegExp(r'^\d{4}-\d{2}-\d{2}$');
+      final brands = await loadOwnershipJsonArray(_brandsAssetPath);
 
       for (final entry in brands) {
         expect(
@@ -245,7 +241,7 @@ void main() {
         final effectiveFromValue = effectiveFrom as String;
 
         expect(
-          datePattern.hasMatch(effectiveFromValue),
+          _isoDatePattern.hasMatch(effectiveFromValue),
           isTrue,
           reason:
               'Brand $brandId has invalid effectiveFrom format '
@@ -272,7 +268,7 @@ void main() {
           final effectiveToValue = effectiveTo as String;
 
           expect(
-            datePattern.hasMatch(effectiveToValue),
+            _isoDatePattern.hasMatch(effectiveToValue),
             isTrue,
             reason:
                 'Brand $brandId has invalid effectiveTo format '
@@ -306,8 +302,6 @@ void main() {
         'assets/data/ownership/brands.json',
       );
 
-      final marketCodePattern = RegExp(r'^[A-Z]{2}$');
-
       for (final entry in brands) {
         expect(
           entry,
@@ -338,7 +332,7 @@ void main() {
           final marketCode = market as String;
 
           expect(
-            marketCodePattern.hasMatch(marketCode),
+            _uppercaseTwoLetterCodePattern.hasMatch(marketCode),
             isTrue,
             reason:
                 'Brand $brandId has invalid market code "$marketCode". '
