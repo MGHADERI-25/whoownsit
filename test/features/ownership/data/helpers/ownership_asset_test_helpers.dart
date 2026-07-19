@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:flutter/services.dart';
-import 'package:flutter_test/flutter_test.dart';
 import 'package:whoownsit/features/ownership/data/ownership_database.dart';
 import 'package:whoownsit/features/ownership/data/ownership_database_loader.dart';
 
@@ -10,16 +9,37 @@ Future<OwnershipDatabase> loadOwnershipDatabase() {
 }
 
 Future<List<dynamic>> loadOwnershipJsonArray(String assetPath) async {
-  final jsonString = await rootBundle.loadString(assetPath);
-  final decoded = jsonDecode(jsonString);
+  late final String jsonString;
 
-  expect(
-    decoded,
-    isA<List<dynamic>>(),
-    reason: '$assetPath must contain a JSON array.',
-  );
+  try {
+    jsonString = await rootBundle.loadString(assetPath);
+  } on Object catch (error) {
+    throw StateError(
+      'Failed to load ownership JSON asset "$assetPath": $error',
+    );
+  }
 
-  return decoded as List<dynamic>;
+  late final dynamic decoded;
+
+  try {
+    decoded = jsonDecode(jsonString);
+  } on FormatException catch (error) {
+    throw FormatException(
+      'Ownership asset "$assetPath" contains invalid JSON: '
+      '${error.message}',
+      null,
+      error.offset,
+    );
+  }
+
+  if (decoded is! List<dynamic>) {
+    throw FormatException(
+      'Ownership asset "$assetPath" must contain a JSON array, '
+      'but decoded ${decoded.runtimeType}.',
+    );
+  }
+
+  return decoded;
 }
 
 DateTime? parseStrictDate(String value) {
