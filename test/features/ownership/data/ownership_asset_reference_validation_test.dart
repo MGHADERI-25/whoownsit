@@ -7,7 +7,7 @@ void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
   group('ownership asset reference validation', () {
-    test('all brand ownerCompanyIds reference existing companies', () async {
+    test('brand ownerCompanyIds reference existing companies', () async {
       final database = await loadOwnershipDatabase();
       final companyIds = database.companies
           .map((company) => company.id)
@@ -18,13 +18,13 @@ void main() {
           companyIds.contains(brand.ownerCompanyId),
           isTrue,
           reason:
-              'Brand ${brand.id} references missing company '
-              '${brand.ownerCompanyId}.',
+              'Brand "${brand.id}" references missing company '
+              '"${brand.ownerCompanyId}" through ownerCompanyId.',
         );
       }
     });
 
-    test('all brand sourceIds reference existing sources', () async {
+    test('brand sourceIds reference existing sources', () async {
       final database = await loadOwnershipDatabase();
       final sourceIds = database.sources.map((source) => source.id).toSet();
 
@@ -34,65 +34,97 @@ void main() {
             sourceIds.contains(sourceId),
             isTrue,
             reason:
-                'Brand ${brand.id} references missing source '
-                '$sourceId.',
+                'Brand "${brand.id}" references missing source '
+                '"$sourceId" through sourceIds.',
           );
         }
       }
     });
 
-    test('current ownership records have consistent relationships', () async {
-      final database = await loadOwnershipDatabase();
+    test(
+      'brands use supported relationship types and valid notOwnedBy targets',
+      () async {
+        final database = await loadOwnershipDatabase();
 
-      for (final brand in database.brands) {
-        expect(
-          brand.relationshipType == RelationshipType.unknown,
-          isFalse,
-          reason: 'Brand ${brand.id} uses an unknown relationship type.',
-        );
-
-        if (brand.relationshipType == RelationshipType.notOwnedBy) {
+        for (final brand in database.brands) {
           expect(
-            brand.ownerCompanyId == 'company_nestle_sa',
-            isTrue,
+            brand.relationshipType == RelationshipType.unknown,
+            isFalse,
             reason:
-                'Brand ${brand.id} uses notOwnedBy but does not reference '
-                'the target company.',
+                'Brand "${brand.id}" uses unsupported relationship type '
+                '"${brand.relationshipType}".',
           );
+
+          if (brand.relationshipType == RelationshipType.notOwnedBy) {
+            expect(
+              brand.ownerCompanyId == 'company_nestle_sa',
+              isTrue,
+              reason:
+                  'Brand "${brand.id}" uses notOwnedBy but references company '
+                  '"${brand.ownerCompanyId}" instead of "company_nestle_sa".',
+            );
+          }
         }
-      }
-    });
+      },
+    );
 
     test('company IDs are unique', () async {
       final database = await loadOwnershipDatabase();
-      final ids = database.companies.map((company) => company.id).toList();
+      final seenIds = <String>{};
+      final duplicateIds = <String>{};
+
+      for (final company in database.companies) {
+        if (!seenIds.add(company.id)) {
+          duplicateIds.add(company.id);
+        }
+      }
 
       expect(
-        ids.toSet().length,
-        ids.length,
-        reason: 'Duplicate company IDs found in ownership assets.',
+        duplicateIds,
+        isEmpty,
+        reason:
+            'Ownership assets contain duplicate company IDs: '
+            '${duplicateIds.join(', ')}.',
       );
     });
 
     test('brand IDs are unique', () async {
       final database = await loadOwnershipDatabase();
-      final ids = database.brands.map((brand) => brand.id).toList();
+      final seenIds = <String>{};
+      final duplicateIds = <String>{};
+
+      for (final brand in database.brands) {
+        if (!seenIds.add(brand.id)) {
+          duplicateIds.add(brand.id);
+        }
+      }
 
       expect(
-        ids.toSet().length,
-        ids.length,
-        reason: 'Duplicate brand IDs found in ownership assets.',
+        duplicateIds,
+        isEmpty,
+        reason:
+            'Ownership assets contain duplicate brand IDs: '
+            '${duplicateIds.join(', ')}.',
       );
     });
 
     test('source IDs are unique', () async {
       final database = await loadOwnershipDatabase();
-      final ids = database.sources.map((source) => source.id).toList();
+      final seenIds = <String>{};
+      final duplicateIds = <String>{};
+
+      for (final source in database.sources) {
+        if (!seenIds.add(source.id)) {
+          duplicateIds.add(source.id);
+        }
+      }
 
       expect(
-        ids.toSet().length,
-        ids.length,
-        reason: 'Duplicate source IDs found in ownership assets.',
+        duplicateIds,
+        isEmpty,
+        reason:
+            'Ownership assets contain duplicate source IDs: '
+            '${duplicateIds.join(', ')}.',
       );
     });
 
@@ -115,8 +147,8 @@ void main() {
             existingBrandId == null || existingBrandId == brand.id,
             isTrue,
             reason:
-                'Searchable name "$normalizedName" is shared by '
-                '$existingBrandId and ${brand.id}.',
+                'Searchable name "$normalizedName" is shared by brands '
+                '"$existingBrandId" and "${brand.id}".',
           );
 
           ownersByNormalizedName[normalizedName] = brand.id;

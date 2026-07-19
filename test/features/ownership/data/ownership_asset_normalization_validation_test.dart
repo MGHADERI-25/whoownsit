@@ -15,19 +15,21 @@ void main() {
           expect(
             normalizedName,
             normalizedName.trim(),
-            reason: 'Brand ${brand.id} contains an untrimmed normalized name.',
+            reason:
+                'Brand "${brand.id}" contains untrimmed normalized name '
+                '"$normalizedName".',
           );
           expect(
             normalizedName,
             normalizedName.toLowerCase(),
             reason:
-                'Brand ${brand.id} contains a non-lowercase '
-                'normalized name.',
+                'Brand "${brand.id}" contains non-lowercase normalized name '
+                '"$normalizedName".',
           );
           expect(
             normalizedName,
             isNotEmpty,
-            reason: 'Brand ${brand.id} contains an empty normalized name.',
+            reason: 'Brand "${brand.id}" contains an empty normalized name.',
           );
         }
       }
@@ -42,13 +44,15 @@ void main() {
           expect(
             alias.trim(),
             isNotEmpty,
-            reason: 'Brand ${brand.id} contains an empty alias.',
+            reason: 'Brand "${brand.id}" contains an empty alias.',
           );
 
           expect(
             normalizer.normalize(alias),
             isNotEmpty,
-            reason: 'Brand ${brand.id} contains an unusable alias "$alias".',
+            reason:
+                'Brand "${brand.id}" contains alias "$alias", which normalizes '
+                'to an empty value.',
           );
         }
       }
