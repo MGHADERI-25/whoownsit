@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-
+import 'package:whoownsit/features/ownership/domain/brand_name_normalizer.dart';
 import 'helpers/ownership_asset_test_helpers.dart';
 
 void main() {
@@ -73,29 +73,30 @@ void main() {
       );
     });
 
-    test('brand normalized names are not shared by different brands', () async {
+    test('searchable brand names are not shared by different brands', () async {
+      const normalizer = BrandNameNormalizer();
       final database = await loadOwnershipDatabase();
       final ownersByNormalizedName = <String, String>{};
 
       for (final brand in database.brands) {
-        final names = <String>{
-          brand.name.trim().toLowerCase(),
-          ...brand.aliases.map((value) => value.trim().toLowerCase()),
-          ...brand.normalizedNames.map((value) => value.trim().toLowerCase()),
-        };
+        final normalizedNames = <String>{
+          normalizer.normalize(brand.name),
+          ...brand.aliases.map(normalizer.normalize),
+          ...brand.normalizedNames.map(normalizer.normalize),
+        }..removeWhere((value) => value.isEmpty);
 
-        for (final name in names.where((value) => value.isNotEmpty)) {
-          final existingBrandId = ownersByNormalizedName[name];
+        for (final normalizedName in normalizedNames) {
+          final existingBrandId = ownersByNormalizedName[normalizedName];
 
           expect(
             existingBrandId == null || existingBrandId == brand.id,
             isTrue,
             reason:
-                'Normalized name "$name" is shared by '
+                'Searchable name "$normalizedName" is shared by '
                 '$existingBrandId and ${brand.id}.',
           );
 
-          ownersByNormalizedName[name] = brand.id;
+          ownersByNormalizedName[normalizedName] = brand.id;
         }
       }
     });

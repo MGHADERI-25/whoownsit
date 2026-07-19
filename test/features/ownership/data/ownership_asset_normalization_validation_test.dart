@@ -92,7 +92,7 @@ void main() {
       }
     });
 
-    test('every brand has usable canonical-name coverage', () async {
+    test('every brand stores its canonical normalized name', () async {
       const normalizer = BrandNameNormalizer();
       final database = await loadOwnershipDatabase();
 
@@ -107,24 +107,23 @@ void main() {
               '"${brand.name}".',
         );
 
-        final searchableNames = <String>{
-          normalizedCanonicalName,
-          ...brand.aliases.map(normalizer.normalize),
-          ...brand.normalizedNames.map(normalizer.normalize),
-        }..removeWhere((value) => value.isEmpty);
+        final storedNormalizedNames = brand.normalizedNames
+            .map(normalizer.normalize)
+            .where((value) => value.isNotEmpty)
+            .toSet();
 
         expect(
-          searchableNames,
+          storedNormalizedNames,
           isNotEmpty,
-          reason: 'Brand ${brand.id} has no usable searchable names.',
+          reason: 'Brand ${brand.id} has no usable normalized names.',
         );
 
         expect(
-          searchableNames.contains(normalizedCanonicalName),
+          storedNormalizedNames.contains(normalizedCanonicalName),
           isTrue,
           reason:
-              'Brand ${brand.id} does not include its canonical name '
-              'in the searchable-name set.',
+              'Brand ${brand.id} does not store its canonical normalized name '
+              '"$normalizedCanonicalName".',
         );
       }
     });
