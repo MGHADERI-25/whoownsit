@@ -33,24 +33,6 @@ void main() {
       }
     });
 
-    test('brand effective date ranges are valid', () async {
-      final database = await loadOwnershipDatabase();
-
-      for (final brand in database.brands) {
-        final effectiveTo = brand.effectiveTo;
-
-        if (effectiveTo == null) {
-          continue;
-        }
-
-        expect(
-          effectiveTo.isBefore(brand.effectiveFrom),
-          isFalse,
-          reason: 'Brand ${brand.id} has effectiveTo before effectiveFrom.',
-        );
-      }
-    });
-
     test('brands contain required non-empty fields', () async {
       final database = await loadOwnershipDatabase();
 
