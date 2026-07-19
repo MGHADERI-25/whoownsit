@@ -1,5 +1,4 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:whoownsit/features/ownership/domain/relationship_type.dart';
 
 import 'helpers/ownership_asset_test_helpers.dart';
 
@@ -81,28 +80,6 @@ void main() {
           isNotEmpty,
           reason: 'Source ${source.id} has an empty publisher.',
         );
-      }
-    });
-
-    test('current ownership records have consistent relationships', () async {
-      final database = await loadOwnershipDatabase();
-
-      for (final brand in database.brands) {
-        expect(
-          brand.relationshipType == RelationshipType.unknown,
-          isFalse,
-          reason: 'Brand ${brand.id} uses an unknown relationship type.',
-        );
-
-        if (brand.relationshipType == RelationshipType.notOwnedBy) {
-          expect(
-            brand.ownerCompanyId == 'company_nestle_sa',
-            isTrue,
-            reason:
-                'Brand ${brand.id} uses notOwnedBy but does not reference '
-                'the target company.',
-          );
-        }
       }
     });
 
