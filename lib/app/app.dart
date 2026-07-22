@@ -17,7 +17,7 @@ class WhoOwnsItApp extends StatefulWidget {
 
 class _WhoOwnsItAppState extends State<WhoOwnsItApp> {
   late final AppDependencies dependencies =
-      widget.dependencies ?? AppDependencies();
+      widget.dependencies ?? AppDependencies.production();
 
   @override
   Widget build(BuildContext context) {
