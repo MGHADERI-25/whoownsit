@@ -22,6 +22,40 @@ class CountingOwnershipDatabaseLoader extends OwnershipDatabaseLoader {
   }
 }
 
+class FailingOnceOwnershipDatabaseLoader extends OwnershipDatabaseLoader {
+  FailingOnceOwnershipDatabaseLoader({required this.database});
+
+  final OwnershipDatabase database;
+
+  int loadCount = 0;
+
+  @override
+  Future<OwnershipDatabase> load() async {
+    loadCount++;
+
+    if (loadCount == 1) {
+      throw StateError('Database load failed.');
+    }
+
+    return database;
+  }
+}
+
+class DelayedOwnershipDatabaseLoader extends OwnershipDatabaseLoader {
+  DelayedOwnershipDatabaseLoader({required this.database});
+
+  final OwnershipDatabase database;
+
+  int loadCount = 0;
+
+  @override
+  Future<OwnershipDatabase> load() async {
+    loadCount++;
+    await Future<void>.delayed(const Duration(milliseconds: 10));
+    return database;
+  }
+}
+
 void main() {
   group('LocalOwnershipRepository', () {
     final company = Company(
@@ -45,6 +79,44 @@ void main() {
       effectiveTo: null,
       markets: const [],
     );
+
+    test('shares one database load across concurrent calls', () async {
+      final database = OwnershipDatabase(
+        companies: [company],
+        brands: [brand],
+        sources: const <OwnershipSource>[],
+      );
+
+      final loader = DelayedOwnershipDatabaseLoader(database: database);
+      final repository = LocalOwnershipRepository(databaseLoader: loader);
+
+      final results = await Future.wait([
+        repository.getCompanies(),
+        repository.getBrands(),
+        repository.getSources(),
+      ]);
+
+      expect(results[0], [company]);
+      expect(results[1], [brand]);
+      expect(results[2], isEmpty);
+      expect(loader.loadCount, 1);
+    });
+
+    test('retries loading after an initial failure', () async {
+      final database = OwnershipDatabase(
+        companies: [company],
+        brands: [brand],
+        sources: const <OwnershipSource>[],
+      );
+
+      final loader = FailingOnceOwnershipDatabaseLoader(database: database);
+      final repository = LocalOwnershipRepository(databaseLoader: loader);
+
+      await expectLater(repository.getCompanies(), throwsA(isA<StateError>()));
+
+      expect(await repository.getCompanies(), [company]);
+      expect(loader.loadCount, 2);
+    });
 
     test('returns companies, brands, and sources from the database', () async {
       final database = OwnershipDatabase(

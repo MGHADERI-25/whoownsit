@@ -13,7 +13,25 @@ class LocalOwnershipRepository implements OwnershipRepository {
   Future<OwnershipDatabase>? _databaseFuture;
 
   Future<OwnershipDatabase> _getDatabase() {
-    return _databaseFuture ??= databaseLoader.load();
+    final cachedFuture = _databaseFuture;
+
+    if (cachedFuture != null) {
+      return cachedFuture;
+    }
+
+    final loadFuture = _loadDatabase();
+    _databaseFuture = loadFuture;
+
+    return loadFuture;
+  }
+
+  Future<OwnershipDatabase> _loadDatabase() async {
+    try {
+      return await databaseLoader.load();
+    } on Object {
+      _databaseFuture = null;
+      rethrow;
+    }
   }
 
   @override
