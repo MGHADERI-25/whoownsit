@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:whoownsit/app/app.dart';
 import 'package:whoownsit/app/app_dependencies.dart';
@@ -113,6 +114,8 @@ void main() {
     );
 
     await tester.pumpWidget(WhoOwnsItApp(dependencies: dependencies));
+
+    await tester.enterText(find.byType(TextField), '3017620422003');
 
     await tester.tap(find.text('Lookup ownership'));
     await tester.pumpAndSettle();

@@ -11,6 +11,7 @@ class ManualBarcodeLookupScreen extends StatefulWidget {
   const ManualBarcodeLookupScreen({
     required this.lookupProductOwnershipByBarcodeUseCase,
     this.developerBrandLookupScreenBuilder,
+    this.barcodeScannerScreenBuilder,
     super.key,
   });
 
@@ -18,6 +19,7 @@ class ManualBarcodeLookupScreen extends StatefulWidget {
   lookupProductOwnershipByBarcodeUseCase;
 
   final WidgetBuilder? developerBrandLookupScreenBuilder;
+  final WidgetBuilder? barcodeScannerScreenBuilder;
 
   @override
   State<ManualBarcodeLookupScreen> createState() =>
@@ -25,9 +27,7 @@ class ManualBarcodeLookupScreen extends StatefulWidget {
 }
 
 class _ManualBarcodeLookupScreenState extends State<ManualBarcodeLookupScreen> {
-  final TextEditingController _barcodeController = TextEditingController(
-    text: '3017620422003',
-  );
+  final TextEditingController _barcodeController = TextEditingController();
 
   bool _isLoading = false;
   OwnershipResult? _result;
@@ -39,13 +39,23 @@ class _ManualBarcodeLookupScreenState extends State<ManualBarcodeLookupScreen> {
   }
 
   Future<void> _lookup() async {
+    if (_isLoading) {
+      return;
+    }
+
+    final barcode = _barcodeController.text.trim();
+
+    if (barcode.isEmpty) {
+      return;
+    }
+
     setState(() {
       _isLoading = true;
       _result = null;
     });
 
     final result = await widget.lookupProductOwnershipByBarcodeUseCase.execute(
-      _barcodeController.text,
+      barcode,
     );
 
     if (!mounted) {
@@ -60,7 +70,11 @@ class _ManualBarcodeLookupScreenState extends State<ManualBarcodeLookupScreen> {
 
   Future<void> _scanBarcode() async {
     final scannedBarcode = await Navigator.of(context).push<String>(
-      MaterialPageRoute(builder: (_) => const BarcodeScannerScreen()),
+      MaterialPageRoute(
+        builder:
+            widget.barcodeScannerScreenBuilder ??
+            (_) => const BarcodeScannerScreen(),
+      ),
     );
 
     if (scannedBarcode == null || !mounted) {
@@ -115,6 +129,8 @@ class _ManualBarcodeLookupScreenState extends State<ManualBarcodeLookupScreen> {
                       TextField(
                         controller: _barcodeController,
                         keyboardType: TextInputType.number,
+                        textInputAction: TextInputAction.search,
+                        onSubmitted: (_) => _lookup(),
                         decoration: const InputDecoration(
                           labelText: 'Barcode',
                           prefixIcon: Icon(Icons.numbers),
