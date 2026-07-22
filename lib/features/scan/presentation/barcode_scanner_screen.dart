@@ -2,7 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
-import 'package:collection/collection.dart';
+
+import '../domain/select_barcode_value.dart';
 
 class BarcodeScannerScreen extends StatefulWidget {
   const BarcodeScannerScreen({super.key});
@@ -54,14 +55,9 @@ class _BarcodeScannerScreenState extends State<BarcodeScannerScreen>
       return;
     }
 
-    final barcode = capture.barcodes.where((candidate) {
-      final value = candidate.rawValue;
-      return value != null && value.trim().isNotEmpty;
-    }).firstOrNull;
+    final value = selectBarcodeValue(capture);
 
-    final value = barcode?.rawValue?.trim();
-
-    if (value == null || value.isEmpty) {
+    if (value == null) {
       return;
     }
 
