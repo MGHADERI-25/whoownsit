@@ -7,14 +7,17 @@ import 'package:flutter/foundation.dart';
 import '../features/ownership/presentation/developer_brand_lookup_screen.dart';
 
 class WhoOwnsItApp extends StatefulWidget {
-  const WhoOwnsItApp({super.key});
+  const WhoOwnsItApp({this.dependencies, super.key});
+
+  final AppDependencies? dependencies;
 
   @override
   State<WhoOwnsItApp> createState() => _WhoOwnsItAppState();
 }
 
 class _WhoOwnsItAppState extends State<WhoOwnsItApp> {
-  late final AppDependencies dependencies = AppDependencies();
+  late final AppDependencies dependencies =
+      widget.dependencies ?? AppDependencies();
 
   @override
   Widget build(BuildContext context) {
