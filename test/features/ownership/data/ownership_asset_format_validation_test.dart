@@ -1,11 +1,33 @@
 import 'package:flutter_test/flutter_test.dart';
+
 import 'helpers/ownership_asset_test_helpers.dart';
 
+const _companiesAssetPath = 'assets/data/ownership/companies.json';
 const _brandsAssetPath = 'assets/data/ownership/brands.json';
 const _sourcesAssetPath = 'assets/data/ownership/sources.json';
 
 final _isoDatePattern = RegExp(r'^\d{4}-\d{2}-\d{2}$');
 final _uppercaseTwoLetterCodePattern = RegExp(r'^[A-Z]{2}$');
+
+const _supportedRelationshipTypes = {
+  'owned_by',
+  'subsidiary_of',
+  'controlled_by',
+  'licensed_by',
+  'distributed_by',
+  'joint_venture',
+  'related_to',
+  'not_owned_by',
+  'unknown',
+};
+
+const _supportedVerificationStatuses = {
+  'unverified',
+  'community_submitted',
+  'source_verified',
+  'maintainer_verified',
+  'disputed',
+};
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -293,6 +315,120 @@ void main() {
                   'Brand $brandId has effectiveTo earlier than effectiveFrom.',
             );
           }
+        }
+      }
+    });
+
+    test('serialized ownership enum values are supported', () async {
+      final brands = await loadOwnershipJsonArray(_brandsAssetPath);
+
+      for (final entry in brands) {
+        expect(
+          entry,
+          isA<Map<String, dynamic>>(),
+          reason: 'Every brands.json entry must be an object.',
+        );
+
+        final brand = entry as Map<String, dynamic>;
+        final brandId = brand['id'];
+        final relationshipType = brand['relationshipType'];
+        final verificationStatus = brand['verificationStatus'];
+
+        expect(
+          relationshipType,
+          isA<String>(),
+          reason: 'Brand $brandId relationshipType must be a string.',
+        );
+
+        expect(
+          _supportedRelationshipTypes.contains(relationshipType),
+          isTrue,
+          reason:
+              'Brand $brandId uses unsupported relationshipType '
+              '"$relationshipType".',
+        );
+
+        expect(
+          verificationStatus,
+          isA<String>(),
+          reason: 'Brand $brandId verificationStatus must be a string.',
+        );
+
+        expect(
+          _supportedVerificationStatuses.contains(verificationStatus),
+          isTrue,
+          reason:
+              'Brand $brandId uses unsupported verificationStatus '
+              '"$verificationStatus".',
+        );
+      }
+    });
+
+    test('ownership asset collections contain only strings', () async {
+      final brands = await loadOwnershipJsonArray(_brandsAssetPath);
+
+      for (final entry in brands) {
+        expect(
+          entry,
+          isA<Map<String, dynamic>>(),
+          reason: 'Every brands.json entry must be an object.',
+        );
+
+        final brand = entry as Map<String, dynamic>;
+        final brandId = brand['id'];
+
+        for (final fieldName in const [
+          'aliases',
+          'normalizedNames',
+          'sourceIds',
+          'markets',
+        ]) {
+          final value = brand[fieldName];
+
+          expect(
+            value,
+            isA<List<dynamic>>(),
+            reason: 'Brand $brandId field "$fieldName" must be an array.',
+          );
+
+          for (final item in value as List<dynamic>) {
+            expect(
+              item,
+              isA<String>(),
+              reason:
+                  'Brand $brandId field "$fieldName" contains non-string '
+                  'value "$item".',
+            );
+          }
+        }
+      }
+
+      final companies = await loadOwnershipJsonArray(_companiesAssetPath);
+
+      for (final entry in companies) {
+        expect(
+          entry,
+          isA<Map<String, dynamic>>(),
+          reason: 'Every companies.json entry must be an object.',
+        );
+
+        final company = entry as Map<String, dynamic>;
+        final companyId = company['id'];
+        final aliases = company['aliases'];
+
+        expect(
+          aliases,
+          isA<List<dynamic>>(),
+          reason: 'Company $companyId aliases must be an array.',
+        );
+
+        for (final alias in aliases as List<dynamic>) {
+          expect(
+            alias,
+            isA<String>(),
+            reason:
+                'Company $companyId aliases contains non-string value "$alias".',
+          );
         }
       }
     });
