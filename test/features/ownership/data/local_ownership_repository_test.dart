@@ -102,6 +102,28 @@ void main() {
       expect(loader.loadCount, 1);
     });
 
+    test('returns immutable cached collections', () async {
+      final database = OwnershipDatabase(
+        companies: [company],
+        brands: [brand],
+        sources: const <OwnershipSource>[],
+      );
+
+      final loader = CountingOwnershipDatabaseLoader(database: database);
+      final repository = LocalOwnershipRepository(databaseLoader: loader);
+
+      final companies = await repository.getCompanies();
+      final brands = await repository.getBrands();
+      final sources = await repository.getSources();
+
+      expect(() => companies.clear(), throwsUnsupportedError);
+      expect(() => brands.clear(), throwsUnsupportedError);
+      expect(
+        () => sources.add(throw UnimplementedError()),
+        throwsUnsupportedError,
+      );
+    });
+
     test('retries loading after an initial failure', () async {
       final database = OwnershipDatabase(
         companies: [company],
@@ -116,6 +138,25 @@ void main() {
 
       expect(await repository.getCompanies(), [company]);
       expect(loader.loadCount, 2);
+    });
+
+    test('database snapshots its input collections', () {
+      final companies = <Company>[company];
+      final brands = <Brand>[brand];
+      final sources = <OwnershipSource>[];
+
+      final database = OwnershipDatabase(
+        companies: companies,
+        brands: brands,
+        sources: sources,
+      );
+
+      companies.clear();
+      brands.clear();
+
+      expect(database.companies, [company]);
+      expect(database.brands, [brand]);
+      expect(database.sources, isEmpty);
     });
 
     test('returns companies, brands, and sources from the database', () async {

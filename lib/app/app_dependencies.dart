@@ -15,7 +15,7 @@ class AppDependencies {
       OpenFoodFactsProductRepository(client: openFoodFactsClient);
 
   late final LocalOwnershipRepository ownershipRepository =
-      LocalOwnershipRepository(databaseLoader: const OwnershipDatabaseLoader());
+      LocalOwnershipRepository(databaseLoader: OwnershipDatabaseLoader());
 
   late final LookupProductByBarcodeUseCase lookupProductByBarcodeUseCase =
       LookupProductByBarcodeUseCase(productRepository: productRepository);

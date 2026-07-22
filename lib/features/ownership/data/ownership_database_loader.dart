@@ -7,7 +7,7 @@ import 'ownership_database.dart';
 import 'ownership_json_parser.dart';
 
 class OwnershipDatabaseLoader {
-  const OwnershipDatabaseLoader({
+  OwnershipDatabaseLoader({
     this.assetBundle,
     OwnershipJsonParser? parser,
   }) : _parser = parser ?? const OwnershipJsonParser();
