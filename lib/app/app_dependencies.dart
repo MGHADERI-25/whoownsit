@@ -12,29 +12,21 @@ class AppDependencies {
   late final OpenFoodFactsClient openFoodFactsClient = OpenFoodFactsClient();
 
   late final OpenFoodFactsProductRepository productRepository =
-      OpenFoodFactsProductRepository(
-    client: openFoodFactsClient,
-  );
+      OpenFoodFactsProductRepository(client: openFoodFactsClient);
 
   late final LocalOwnershipRepository ownershipRepository =
-      const LocalOwnershipRepository(
-    databaseLoader: OwnershipDatabaseLoader(),
-  );
+      LocalOwnershipRepository(databaseLoader: const OwnershipDatabaseLoader());
 
   late final LookupProductByBarcodeUseCase lookupProductByBarcodeUseCase =
-      LookupProductByBarcodeUseCase(
-    productRepository: productRepository,
-  );
+      LookupProductByBarcodeUseCase(productRepository: productRepository);
 
   late final DetermineOwnershipUseCase determineOwnershipUseCase =
-      DetermineOwnershipUseCase(
-    ownershipRepository: ownershipRepository,
-  );
+      DetermineOwnershipUseCase(ownershipRepository: ownershipRepository);
 
   late final LookupProductOwnershipByBarcodeUseCase
-      lookupProductOwnershipByBarcodeUseCase =
+  lookupProductOwnershipByBarcodeUseCase =
       LookupProductOwnershipByBarcodeUseCase(
-    lookupProductByBarcodeUseCase: lookupProductByBarcodeUseCase,
-    determineOwnershipUseCase: determineOwnershipUseCase,
-  );
+        lookupProductByBarcodeUseCase: lookupProductByBarcodeUseCase,
+        determineOwnershipUseCase: determineOwnershipUseCase,
+      );
 }
