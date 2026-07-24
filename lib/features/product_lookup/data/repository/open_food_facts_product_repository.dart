@@ -27,8 +27,12 @@ class OpenFoodFactsProductRepository implements ProductRepository {
         return const ProductNotFound();
       }
 
-      return ProductLookupFailure(
+      return const ProductLookupFailure(
         'Product lookup failed. Please check your internet connection and try again.',
+      );
+    } on FormatException {
+      return const ProductLookupFailure(
+        'Received an invalid response from the product database.',
       );
     }
   }
