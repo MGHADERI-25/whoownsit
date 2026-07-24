@@ -89,32 +89,43 @@ void main() {
       );
     }
 
-    test('returns ownedByTarget when product brand matches ownership data', () async {
-      final useCase = buildUseCase(
-        const ProductFound(
-          Product(
-            barcode: '7613036242925',
-            name: 'KitKat',
-            brandNames: ['KitKat'],
+    test(
+      'returns ownedByTarget when product brand matches ownership data',
+      () async {
+        final useCase = buildUseCase(
+          const ProductFound(
+            Product(
+              barcode: '7613036242925',
+              name: 'KitKat',
+              brandNames: ['KitKat'],
+            ),
           ),
-        ),
-      );
+        );
 
-      final result = await useCase.execute('7613036242925');
+        final result = await useCase.execute('7613036242925');
 
-      expect(result.status, OwnershipResultStatus.ownedByTarget);
-      expect(result.matchedBrandName, 'KitKat');
-      expect(result.ownerCompanyName, 'Nestlé S.A.');
-    });
+        expect(result.product, isNotNull);
+        expect(result.product!.barcode, '7613036242925');
+        expect(result.product!.name, 'KitKat');
 
-    test('returns productNotFound when product lookup fails to find product', () async {
-      final useCase = buildUseCase(const ProductNotFound());
+        expect(result.ownership.status, OwnershipResultStatus.ownedByTarget);
+        expect(result.ownership.matchedBrandName, 'KitKat');
+        expect(result.ownership.ownerCompanyName, 'Nestlé S.A.');
+      },
+    );
 
-      final result = await useCase.execute('0000000000000');
+    test(
+      'returns productNotFound when product lookup fails to find product',
+      () async {
+        final useCase = buildUseCase(const ProductNotFound());
 
-      expect(result.status, OwnershipResultStatus.productNotFound);
-      expect(result.message, 'Product was not found.');
-    });
+        final result = await useCase.execute('0000000000000');
+
+        expect(result.product, isNull);
+        expect(result.ownership.status, OwnershipResultStatus.productNotFound);
+        expect(result.ownership.message, 'Product was not found.');
+      },
+    );
 
     test('returns unknown when product lookup fails with error', () async {
       final useCase = buildUseCase(
@@ -123,8 +134,9 @@ void main() {
 
       final result = await useCase.execute('7613036242925');
 
-      expect(result.status, OwnershipResultStatus.unknown);
-      expect(result.message, 'Network unavailable.');
+      expect(result.product, isNull);
+      expect(result.ownership.status, OwnershipResultStatus.unknown);
+      expect(result.ownership.message, 'Network unavailable.');
     });
 
     test('returns brandNotFound when product has no brand names', () async {
@@ -140,7 +152,12 @@ void main() {
 
       final result = await useCase.execute('7613036242925');
 
-      expect(result.status, OwnershipResultStatus.brandNotFound);
+      expect(result.product, isNotNull);
+      expect(result.product!.barcode, '7613036242925');
+      expect(result.product!.name, 'Unknown Product');
+      expect(result.product!.brandNames, isEmpty);
+
+      expect(result.ownership.status, OwnershipResultStatus.brandNotFound);
     });
   });
 }

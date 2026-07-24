@@ -121,7 +121,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Owned by Nestlé'), findsOneWidget);
-    expect(find.text('KitKat'), findsOneWidget);
+    expect(find.text('KitKat'), findsWidgets);
     expect(find.text('Nestlé S.A.'), findsOneWidget);
   });
 }

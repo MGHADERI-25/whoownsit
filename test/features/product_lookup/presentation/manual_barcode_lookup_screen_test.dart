@@ -294,10 +294,44 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('Owned by Nestlé'), findsOneWidget);
-      expect(find.text('KitKat'), findsOneWidget);
+
+      expect(find.text('KitKat'), findsWidgets);
+      expect(find.text('BARCODE'), findsOneWidget);
+      expect(find.text('7613036242925'), findsNWidgets(2));
+      expect(find.text('REPORTED BRANDS'), findsOneWidget);
+
       expect(find.text('Nestlé S.A.'), findsOneWidget);
       expect(find.text('VERIFICATION'), findsOneWidget);
       expect(find.text('maintainerVerified'), findsOneWidget);
+
+      expect(find.byType(Image), findsNothing);
+    });
+
+    testWidgets('renders fallback when product name is missing', (
+      tester,
+    ) async {
+      final repository = RecordingProductRepository(
+        result: const ProductFound(
+          Product(barcode: '7613036242925', name: null, brandNames: ['KitKat']),
+        ),
+      );
+
+      await tester.pumpWidget(
+        buildTestApp(
+          useCase: buildLookupUseCase(productRepository: repository),
+        ),
+      );
+
+      await tester.enterText(find.byType(TextField), '7613036242925');
+
+      await tester.tap(find.text('Lookup ownership'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Unnamed product'), findsOneWidget);
+      expect(find.text('BARCODE'), findsOneWidget);
+      expect(find.text('7613036242925'), findsNWidgets(2));
+      expect(find.text('REPORTED BRANDS'), findsOneWidget);
+      expect(find.byType(Image), findsNothing);
     });
 
     testWidgets('lookup may finish after screen is disposed', (tester) async {

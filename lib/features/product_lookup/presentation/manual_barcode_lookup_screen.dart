@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 
 import '../../../app/app_constants.dart';
 import '../../ownership/domain/brand_match_label_formatter.dart';
-import '../../ownership/domain/ownership_result.dart';
 import '../../ownership/domain/ownership_result_status.dart';
 import '../../scan/presentation/barcode_scanner_screen.dart';
 import '../application/lookup_product_ownership_by_barcode_use_case.dart';
+import '../application/product_ownership_lookup_result.dart';
 
 class ManualBarcodeLookupScreen extends StatefulWidget {
   const ManualBarcodeLookupScreen({
@@ -30,7 +30,7 @@ class _ManualBarcodeLookupScreenState extends State<ManualBarcodeLookupScreen> {
   final TextEditingController _barcodeController = TextEditingController();
 
   bool _isLoading = false;
-  OwnershipResult? _result;
+  ProductOwnershipLookupResult? _result;
 
   @override
   void dispose() {
@@ -180,7 +180,7 @@ class _ManualBarcodeLookupScreenState extends State<ManualBarcodeLookupScreen> {
                 ),
               ),
               const SizedBox(height: 24),
-              if (result != null) _OwnershipResultCard(result: result),
+              if (result != null) _OwnershipResultCard(lookupResult: result),
             ],
           ),
         ),
@@ -190,27 +190,65 @@ class _ManualBarcodeLookupScreenState extends State<ManualBarcodeLookupScreen> {
 }
 
 class _OwnershipResultCard extends StatelessWidget {
-  const _OwnershipResultCard({required this.result});
+  const _OwnershipResultCard({required this.lookupResult});
 
-  final OwnershipResult result;
+  final ProductOwnershipLookupResult lookupResult;
 
   @override
   Widget build(BuildContext context) {
+    final product = lookupResult.product;
+    final ownership = lookupResult.ownership;
+
     final theme = Theme.of(context);
-    final presentation = _presentationForStatus(result.status);
+    final presentation = _presentationForStatus(ownership.status);
     const matchLabelFormatter = BrandMatchLabelFormatter();
 
     return Card(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
+          if (product != null)
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  if (product.imageUrl != null) ...[
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(12),
+                      child: Image.network(
+                        product.imageUrl!,
+                        height: 180,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                  ],
+                  Text(
+                    product.name ?? 'Unnamed product',
+                    style: theme.textTheme.headlineSmall?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  _ResultDetailBlock(label: 'Barcode', value: product.barcode),
+                  if (product.brandNames.isNotEmpty) ...[
+                    const SizedBox(height: 12),
+                    _ResultDetailBlock(
+                      label: 'Reported brands',
+                      value: product.brandNames.join(', '),
+                    ),
+                  ],
+                ],
+              ),
+            ),
           Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
               color: presentation.color.withValues(alpha: 0.12),
-              borderRadius: const BorderRadius.vertical(
-                top: Radius.circular(16),
-              ),
+              borderRadius: product == null
+                  ? const BorderRadius.vertical(top: Radius.circular(16))
+                  : BorderRadius.zero,
             ),
             child: Row(
               children: [
@@ -233,42 +271,44 @@ class _OwnershipResultCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Text(result.message, style: theme.textTheme.bodyLarge),
-                if (result.matchedBrandName != null) ...[
+                Text(ownership.message, style: theme.textTheme.bodyLarge),
+                if (ownership.matchedBrandName != null) ...[
                   const SizedBox(height: 16),
                   _ResultDetailBlock(
                     label: 'Brand',
-                    value: result.matchedBrandName!,
+                    value: ownership.matchedBrandName!,
                   ),
                 ],
-                if (result.ownerCompanyName != null) ...[
+                if (ownership.ownerCompanyName != null) ...[
                   const SizedBox(height: 12),
                   _ResultDetailBlock(
                     label: 'Owner',
-                    value: result.ownerCompanyName!,
+                    value: ownership.ownerCompanyName!,
                   ),
                 ],
-                if (result.verificationStatus != null) ...[
+                if (ownership.verificationStatus != null) ...[
                   const SizedBox(height: 12),
                   _ResultDetailBlock(
                     label: 'Verification',
-                    value: result.verificationStatus!.name,
+                    value: ownership.verificationStatus!.name,
                   ),
                 ],
-                if (result.matchConfidence != null) ...[
+                if (ownership.matchConfidence != null) ...[
                   const SizedBox(height: 12),
                   _ResultDetailBlock(
                     label: 'Match quality',
                     value: matchLabelFormatter.confidenceLabel(
-                      result.matchConfidence!,
+                      ownership.matchConfidence!,
                     ),
                   ),
                 ],
-                if (result.matchReason != null) ...[
+                if (ownership.matchReason != null) ...[
                   const SizedBox(height: 12),
                   _ResultDetailBlock(
                     label: 'Match reason',
-                    value: matchLabelFormatter.reasonLabel(result.matchReason!),
+                    value: matchLabelFormatter.reasonLabel(
+                      ownership.matchReason!,
+                    ),
                   ),
                 ],
               ],
@@ -281,37 +321,37 @@ class _OwnershipResultCard extends StatelessWidget {
 
   _ResultPresentation _presentationForStatus(OwnershipResultStatus status) {
     return switch (status) {
-      OwnershipResultStatus.ownedByTarget => _ResultPresentation(
+      OwnershipResultStatus.ownedByTarget => const _ResultPresentation(
         title: 'Owned by Nestlé',
         icon: Icons.warning_amber_rounded,
         color: Colors.red,
       ),
-      OwnershipResultStatus.subsidiaryOfTarget => _ResultPresentation(
+      OwnershipResultStatus.subsidiaryOfTarget => const _ResultPresentation(
         title: 'Nestlé subsidiary',
         icon: Icons.account_tree_outlined,
         color: Colors.deepOrange,
       ),
-      OwnershipResultStatus.relatedToTarget => _ResultPresentation(
+      OwnershipResultStatus.relatedToTarget => const _ResultPresentation(
         title: 'Related to Nestlé',
         icon: Icons.link,
         color: Colors.orange,
       ),
-      OwnershipResultStatus.notTarget => _ResultPresentation(
+      OwnershipResultStatus.notTarget => const _ResultPresentation(
         title: 'Not Nestlé',
         icon: Icons.check_circle_outline,
         color: Colors.green,
       ),
-      OwnershipResultStatus.unknown => _ResultPresentation(
+      OwnershipResultStatus.unknown => const _ResultPresentation(
         title: 'Unknown',
         icon: Icons.help_outline,
         color: Colors.blueGrey,
       ),
-      OwnershipResultStatus.productNotFound => _ResultPresentation(
+      OwnershipResultStatus.productNotFound => const _ResultPresentation(
         title: 'Product not found',
         icon: Icons.search_off,
         color: Colors.blueGrey,
       ),
-      OwnershipResultStatus.brandNotFound => _ResultPresentation(
+      OwnershipResultStatus.brandNotFound => const _ResultPresentation(
         title: 'Brand not found',
         icon: Icons.sell_outlined,
         color: Colors.blueGrey,

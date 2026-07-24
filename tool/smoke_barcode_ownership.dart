@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'dart:convert';
 import 'dart:io';
 
@@ -50,14 +52,15 @@ Future<void> main(List<String> args) async {
 
   final result = await useCase.execute(barcode);
 
-  stdout.writeln('Barcode: $barcode');
-  stdout.writeln('Status: ${result.status}');
-  stdout.writeln('Matched brand: ${result.matchedBrandName}');
-  stdout.writeln('Owner company: ${result.ownerCompanyName}');
-  stdout.writeln('Relationship: ${result.relationshipType}');
-  stdout.writeln('Verification: ${result.verificationStatus}');
-  stdout.writeln('Sources: ${result.sourceIds.join(', ')}');
-  stdout.writeln('Message: ${result.message}');
+  final ownership = result.ownership;
+
+  print(ownership.status);
+  print(ownership.matchedBrandName);
+  print(ownership.ownerCompanyName);
+  print(ownership.relationshipType);
+  print(ownership.verificationStatus);
+  print(ownership.sourceIds);
+  print(ownership.message);
 }
 
 class SmokeOwnershipRepository implements OwnershipRepository {
