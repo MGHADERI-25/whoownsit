@@ -5,17 +5,17 @@ import 'open_food_facts_response.dart';
 import 'product_lookup_api_client.dart';
 
 class OpenFoodFactsClient implements ProductLookupApiClient {
-  OpenFoodFactsClient({
-    Dio? dio,
-  }) : _dio = dio ??
-            Dio(
-              BaseOptions(
-                connectTimeout: const Duration(seconds: 10),
-                receiveTimeout: const Duration(seconds: 10),
-                sendTimeout: const Duration(seconds: 10),
-                responseType: ResponseType.json,
-              ),
-            );
+  OpenFoodFactsClient({Dio? dio})
+    : _dio =
+          dio ??
+          Dio(
+            BaseOptions(
+              connectTimeout: const Duration(seconds: 10),
+              receiveTimeout: const Duration(seconds: 10),
+              sendTimeout: const Duration(seconds: 10),
+              responseType: ResponseType.json,
+            ),
+          );
 
   final Dio _dio;
 

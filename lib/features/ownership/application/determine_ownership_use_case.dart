@@ -11,9 +11,7 @@ class DetermineOwnershipUseCase {
   final OwnershipRepository ownershipRepository;
   final OwnershipMatcher ownershipMatcher;
 
-  Future<OwnershipResult> execute({
-    required List<String> brandNames,
-  }) async {
+  Future<OwnershipResult> execute({required List<String> brandNames}) async {
     final companies = await ownershipRepository.getCompanies();
     final brands = await ownershipRepository.getBrands();
 

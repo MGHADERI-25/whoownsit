@@ -213,15 +213,8 @@ class _OwnershipResultCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  if (product.imageUrl != null) ...[
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(12),
-                      child: Image.network(
-                        product.imageUrl!,
-                        height: 180,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
+                  if (product.imageUrl?.trim().isNotEmpty == true) ...[
+                    _ProductImage(imageUrl: product.imageUrl!.trim()),
                     const SizedBox(height: 16),
                   ],
                   Text(
@@ -357,6 +350,44 @@ class _OwnershipResultCard extends StatelessWidget {
         color: Colors.blueGrey,
       ),
     };
+  }
+}
+
+class _ProductImage extends StatelessWidget {
+  const _ProductImage({required this.imageUrl});
+
+  final String imageUrl;
+
+  @override
+  Widget build(BuildContext context) {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(12),
+      child: Image.network(
+        imageUrl,
+        height: 180,
+        fit: BoxFit.cover,
+        errorBuilder: (context, error, stackTrace) {
+          return Container(
+            height: 180,
+            alignment: Alignment.center,
+            color: Theme.of(context).colorScheme.surfaceContainerHighest,
+            child: const Icon(Icons.broken_image_outlined, size: 48),
+          );
+        },
+        loadingBuilder: (context, child, loadingProgress) {
+          if (loadingProgress == null) {
+            return child;
+          }
+
+          return Container(
+            height: 180,
+            alignment: Alignment.center,
+            color: Theme.of(context).colorScheme.surfaceContainerHighest,
+            child: const CircularProgressIndicator(),
+          );
+        },
+      ),
+    );
   }
 }
 

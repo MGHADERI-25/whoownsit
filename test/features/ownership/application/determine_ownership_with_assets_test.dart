@@ -11,18 +11,14 @@ void main() {
   group('DetermineOwnershipUseCase with bundled assets', () {
     test('loads bundled ownership data and matches KitKat', () async {
       final repository = LocalOwnershipRepository(
-        databaseLoader: OwnershipDatabaseLoader(
-          assetBundle: rootBundle,
-        ),
+        databaseLoader: OwnershipDatabaseLoader(assetBundle: rootBundle),
       );
 
       final useCase = DetermineOwnershipUseCase(
         ownershipRepository: repository,
       );
 
-      final result = await useCase.execute(
-        brandNames: const ['KitKat'],
-      );
+      final result = await useCase.execute(brandNames: const ['KitKat']);
 
       expect(result.status, OwnershipResultStatus.ownedByTarget);
       expect(result.matchedBrandName, 'KitKat');
@@ -31,18 +27,14 @@ void main() {
 
     test('returns unknown for brand not present in bundled assets', () async {
       final repository = LocalOwnershipRepository(
-        databaseLoader: OwnershipDatabaseLoader(
-          assetBundle: rootBundle,
-        ),
+        databaseLoader: OwnershipDatabaseLoader(assetBundle: rootBundle),
       );
 
       final useCase = DetermineOwnershipUseCase(
         ownershipRepository: repository,
       );
 
-      final result = await useCase.execute(
-        brandNames: const ['Unknown Brand'],
-      );
+      final result = await useCase.execute(brandNames: const ['Unknown Brand']);
 
       expect(result.status, OwnershipResultStatus.unknown);
     });

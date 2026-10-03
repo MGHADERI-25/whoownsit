@@ -6,9 +6,7 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('WhoOwnsIt'),
-      ),
+      appBar: AppBar(title: const Text('WhoOwnsIt')),
       body: const Center(
         child: Text(
           'Corporate ownership lookup starts here.',

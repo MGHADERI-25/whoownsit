@@ -334,6 +334,70 @@ void main() {
       expect(find.byType(Image), findsNothing);
     });
 
+    testWidgets('does not render image when product image URL is blank', (
+      tester,
+    ) async {
+      final repository = RecordingProductRepository(
+        result: const ProductFound(
+          Product(
+            barcode: '7613036242925',
+            name: 'KitKat',
+            brandNames: ['KitKat'],
+            imageUrl: '   ',
+          ),
+        ),
+      );
+
+      await tester.pumpWidget(
+        buildTestApp(
+          useCase: buildLookupUseCase(productRepository: repository),
+        ),
+      );
+
+      await tester.enterText(find.byType(TextField), '7613036242925');
+
+      await tester.tap(find.text('Lookup ownership'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('KitKat'), findsWidgets);
+      expect(find.byType(Image), findsNothing);
+    });
+
+    testWidgets('renders image when product image URL is present', (
+      tester,
+    ) async {
+      final repository = RecordingProductRepository(
+        result: const ProductFound(
+          Product(
+            barcode: '7613036242925',
+            name: 'KitKat',
+            brandNames: ['KitKat'],
+            imageUrl: 'https://example.com/product.jpg',
+          ),
+        ),
+      );
+
+      await tester.pumpWidget(
+        buildTestApp(
+          useCase: buildLookupUseCase(productRepository: repository),
+        ),
+      );
+
+      await tester.enterText(find.byType(TextField), '7613036242925');
+
+      await tester.tap(find.text('Lookup ownership'));
+      await tester.pump();
+
+      final imageFinder = find.byType(Image);
+
+      expect(imageFinder, findsOneWidget);
+
+      final image = tester.widget<Image>(imageFinder);
+      expect(image.image, isA<NetworkImage>());
+
+      final networkImage = image.image as NetworkImage;
+      expect(networkImage.url, 'https://example.com/product.jpg');
+    });
     testWidgets('lookup may finish after screen is disposed', (tester) async {
       final repository = PendingProductRepository();
 

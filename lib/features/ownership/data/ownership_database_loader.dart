@@ -7,10 +7,8 @@ import 'ownership_database.dart';
 import 'ownership_json_parser.dart';
 
 class OwnershipDatabaseLoader {
-  OwnershipDatabaseLoader({
-    this.assetBundle,
-    OwnershipJsonParser? parser,
-  }) : _parser = parser ?? const OwnershipJsonParser();
+  OwnershipDatabaseLoader({this.assetBundle, OwnershipJsonParser? parser})
+    : _parser = parser ?? const OwnershipJsonParser();
 
   final AssetBundle? assetBundle;
   final OwnershipJsonParser _parser;
@@ -22,10 +20,7 @@ class OwnershipDatabaseLoader {
       bundle,
       OwnershipAssetPaths.companies,
     );
-    final brandsJson = await _loadJsonList(
-      bundle,
-      OwnershipAssetPaths.brands,
-    );
+    final brandsJson = await _loadJsonList(bundle, OwnershipAssetPaths.brands);
     final sourcesJson = await _loadJsonList(
       bundle,
       OwnershipAssetPaths.sources,

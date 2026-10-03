@@ -63,9 +63,7 @@ void main() {
         ownershipRepository: repository,
       );
 
-      final result = await useCase.execute(
-        brandNames: const ['Kit Kat'],
-      );
+      final result = await useCase.execute(brandNames: const ['Kit Kat']);
 
       expect(result.status, OwnershipResultStatus.ownedByTarget);
       expect(result.matchedBrandName, 'KitKat');
@@ -82,9 +80,7 @@ void main() {
         ownershipRepository: repository,
       );
 
-      final result = await useCase.execute(
-        brandNames: const ['Unknown Brand'],
-      );
+      final result = await useCase.execute(brandNames: const ['Unknown Brand']);
 
       expect(result.status, OwnershipResultStatus.unknown);
     });

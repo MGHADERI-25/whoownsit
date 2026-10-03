@@ -36,10 +36,7 @@ void main() {
     });
 
     test('throws when product object is missing', () {
-      expect(
-        () => OpenFoodFactsProductDto.fromJson({}),
-        throwsFormatException,
-      );
+      expect(() => OpenFoodFactsProductDto.fromJson({}), throwsFormatException);
     });
   });
 }
